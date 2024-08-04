@@ -9,16 +9,17 @@ export const authLogin = (req, res) => {
   const state = generateRandomString(16);
   const scope = "user-top-read";
   const redirectUri = "http://localhost:3000/auth/accessToken";
-  res.redirect(
-    "https://accounts.spotify.com/authorize?" +
+  res.json({
+    url:
+      "https://accounts.spotify.com/authorize?" +
       querystring.stringify({
         response_type: "code",
         client_id: process.env.SPOTIFY_CLIENT_ID,
         scope,
         redirect_uri: redirectUri,
         state,
-      })
-  );
+      }),
+  });
 };
 
 export const getAccessToken = (req, res) => {
@@ -54,7 +55,13 @@ export const getAccessToken = (req, res) => {
         }
       )
       .then((result) => {
-        res.status(200).json(result.data);
+        const date = new Date();
+        const hourInSeconds = 60 * 60 * 1000;
+        date.setTime(date.getTime() + hourInSeconds);
+        res.cookie("access_token", result.data.access_token);
+        res.cookie("refresh_token", result.data.refresh_token);
+        res.cookie("token_expiration_date", date);
+        res.redirect("http://localhost:5173");
       });
   }
 };
