@@ -4,4 +4,4 @@ import { tokenMiddleware } from "../middleware/tokenMiddleware.js";
 
 export const songsRouter = express.Router();
 
-songsRouter.get("/top", getTopSongs);
+songsRouter.get("/top", tokenMiddleware, getTopSongs);
