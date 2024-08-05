@@ -2,10 +2,16 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import SongList from "../components/SongList";
 import AnswerList from "../components/AnswerList";
+import { findCookieByKey } from "../util";
+import { useNavigate } from "react-router-dom";
 
 const Game = () => {
   const [songs, setSongs] = useState([]);
+  const navigate = useNavigate();
   useEffect(() => {
+    if (findCookieByKey("access_token") === null) {
+      navigate("/", { replace: true });
+    }
     axios
       .get(`${import.meta.env.VITE_API_URL}/songs/top`, {
         withCredentials: true,

@@ -1,18 +1,22 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
+import Draggable from "react-draggable";
 
 const SongItem = ({ song }) => {
+  const nodeRef = useRef(null);
   return (
-    <div className="w-1/4 h-1/4 relative">
-      <p className="absolute bg-black text-white p-2 rounded-md opacity-75 backdrop-blur-sm top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-        {song.name}
-      </p>
-      <img
-        width={song.album.images[0].width}
-        height={song.album.images[0].height}
-        src={song.album.images[0].url}
-        alt=""
-      />
-    </div>
+    <Draggable nodeRef={nodeRef}>
+      <div ref={nodeRef} className="w-1/4 h-1/4 relative">
+        <p className="absolute bg-black text-white p-2 rounded-md opacity-75 backdrop-blur-sm top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+          {song.name}
+        </p>
+        <img
+          width={song.album.images[0].width}
+          height={song.album.images[0].height}
+          src={song.album.images[0].url}
+          alt=""
+        />
+      </div>
+    </Draggable>
   );
 };
 
