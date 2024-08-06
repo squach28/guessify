@@ -3,8 +3,13 @@ import Draggable from "react-draggable";
 
 const SongItem = ({ song }) => {
   const nodeRef = useRef(null);
+
+  const handleStart = (e) => {
+    console.log(e);
+  };
+
   return (
-    <Draggable nodeRef={nodeRef}>
+    <Draggable nodeRef={nodeRef} onStart={handleStart}>
       <div ref={nodeRef} className="w-1/4 h-1/4 relative">
         <p className="absolute bg-black text-white p-2 rounded-md opacity-75 backdrop-blur-sm top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
           {song.name}
@@ -14,6 +19,7 @@ const SongItem = ({ song }) => {
           height={song.album.images[0].height}
           src={song.album.images[0].url}
           alt=""
+          draggable={false}
         />
       </div>
     </Draggable>
