@@ -15,6 +15,7 @@ export const getTopSongs = (req, res) => {
       })
       .then((result) => {
         res.status(200).json(result.data.items);
-      });
+      })
+      .catch((e) => console.log("error"));
   }
 };

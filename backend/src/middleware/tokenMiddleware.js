@@ -38,7 +38,8 @@ export const tokenMiddleware = (req, res, next) => {
         const newAccessToken = result.data.access_token;
         res.cookie("access_token", newAccessToken);
         res.cookie("token_expiration_date", newExpirationDate);
-      });
+      })
+      .catch((e) => console.log("error"));
   }
   next();
 };

@@ -18,6 +18,7 @@ export const authLogin = (req, res) => {
         scope,
         redirect_uri: redirectUri,
         state,
+        show_dialog: true,
       }),
   });
 };
