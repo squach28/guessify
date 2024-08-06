@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { findCookieByKey } from "./util";
+import Navbar from "./components/Navbar";
 
 const App = () => {
   const navigate = useNavigate();
@@ -19,8 +20,9 @@ const App = () => {
     });
   };
   return (
-    <div className="w-full min-h-screen flex flex-col justify-center items-center bg-slate-100">
-      <div className="bg-white flex flex-col gap-4 items-center p-8 shadow-md rounded-md">
+    <div className="w-full flex flex-col min-h-screen bg-slate-100">
+      <Navbar />
+      <div className="w-[90%] md:max-w-lg mx-auto bg-white flex flex-col gap-4 items-center p-8 shadow-md rounded-md my-auto">
         <h1 className="text-2xl">Your Top Songs Quiz</h1>
         <p className="text-sm">Think you know your top songs on Spotify?</p>
         <button

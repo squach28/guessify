@@ -1,32 +1,32 @@
 import React, { useRef, useState } from "react";
 import Draggable from "react-draggable";
+import leftArrowIcon from "../assets/icons/arrow-left-solid.svg";
+import rightArrowIcon from "../assets/icons/arrow-right-solid.svg";
 
-const SongItem = ({ song }) => {
+const SongItem = ({ song, handleDrag, handleDragStop }) => {
   const nodeRef = useRef(null);
 
-  const handleStart = (e) => {
-    console.log(e);
+  const getArtists = (song) => {
+    const artists = song.album.artists.map((artist) => {
+      return artist.name;
+    });
+
+    return artists.join(", ");
   };
 
   return (
-    <Draggable nodeRef={nodeRef} onStart={handleStart}>
-      <div ref={nodeRef} className="w-1/4 h-1/4 relative">
-        <p className="absolute bg-black text-white p-2 rounded-md opacity-75 backdrop-blur-sm top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-          {song.name}
-        </p>
-        <img
-          width={song.album.images[0].width}
-          height={song.album.images[0].height}
-          src={song.album.images[0].url}
-          alt=""
-          draggable={false}
-        />
-      </div>
-    </Draggable>
+    <p
+      className=" bg-black text-white p-2 rounded-md opacity-75 backdrop-blur-sm"
+      draggable={true}
+      onClick={(e) => e.preventDefault()}
+      onTouchStart={handleDrag}
+    >
+      {song.name} - {getArtists(song)}
+    </p>
   );
 };
 
-const SongList = ({ songs }) => {
+const SongList = ({ songs, handleDrag, handleDragStop }) => {
   const [index, setIndex] = useState(0);
 
   const decrementIndex = () => {
@@ -44,10 +44,18 @@ const SongList = ({ songs }) => {
   };
 
   return (
-    <div className="flex justify-between gap-8 p-4 mt-auto mb-0">
-      <button onClick={decrementIndex}>Previous</button>
-      <SongItem song={songs[index]} />
-      <button onClick={incrementIndex}>Next</button>
+    <div className="flex justify-between gap-4 p-4 mt-auto mb-0">
+      <button onClick={decrementIndex}>
+        <img width={15} height={15} src={leftArrowIcon} alt="left arrow" />
+      </button>
+      <SongItem
+        song={songs[index]}
+        handleDrag={handleDrag}
+        handleDragStop={handleDragStop}
+      />
+      <button onClick={incrementIndex}>
+        <img width={15} height={15} src={rightArrowIcon} alt="" />
+      </button>
     </div>
   );
 };
