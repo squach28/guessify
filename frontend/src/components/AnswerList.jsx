@@ -1,7 +1,6 @@
 import React from "react";
 
 const AnswerList = ({ answers, selected, placeAnswer }) => {
-  console.log(answers);
   return (
     <ol
       className={`w-full list-decimal list-inside flex flex-col justify-between gap-5`}

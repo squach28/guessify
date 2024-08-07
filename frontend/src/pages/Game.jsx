@@ -36,26 +36,44 @@ const Game = () => {
   const placeAnswer = (e) => {
     const newAnswers = answers;
     const answerIndex = e.target.id;
-    const currentSong = songs[index].name;
-    newAnswers[answerIndex] = currentSong;
+    const currentSong = songs[index];
+    newAnswers[answerIndex] = currentSong.name;
     setAnswers(() => {
       setSelected(null);
+      localStorage.setItem("answers", JSON.stringify(newAnswers));
       return newAnswers;
     });
+    const newSongs = songs.filter((song) => song.id !== currentSong.id);
+    setSongs(newSongs);
+    localStorage.setItem("songs", JSON.stringify(newSongs));
   };
 
   useEffect(() => {
     if (findCookieByKey("access_token") === null) {
       navigate("/", { replace: true });
+    } else {
+      if (localStorage.getItem("songs")) {
+        const topSongs = JSON.parse(localStorage.getItem("songs"));
+        setSongs(topSongs);
+      } else {
+        axios
+          .get(`${import.meta.env.VITE_API_URL}/songs/top`, {
+            withCredentials: true,
+          })
+          .then((res) => {
+            const topSongs = res.data;
+            localStorage.setItem("songs", JSON.stringify(topSongs));
+            setSongs(topSongs);
+          });
+      }
     }
-    axios
-      .get(`${import.meta.env.VITE_API_URL}/songs/top`, {
-        withCredentials: true,
-      })
-      .then((res) => setSongs(res.data));
+    if (localStorage.getItem("answers")) {
+      const prevAnswers = localStorage.getItem("answers");
+      setAnswers(JSON.parse(prevAnswers));
+    }
   }, []);
 
-  return songs.length > 0 ? (
+  return (
     <div className="w-full min-h-screen flex flex-col gap-2">
       <Navbar />
       <AnswerList
@@ -64,16 +82,18 @@ const Game = () => {
         placeAnswer={placeAnswer}
         selected={selected}
       />
-      <SongList
-        song={songs[index]}
-        incrementIndex={incrementIndex}
-        decrementIndex={decrementIndex}
-        toggleSelectSong={toggleSelectSong}
-        selected={selected}
-      />
+      {songs.length > 0 ? (
+        <SongList
+          song={songs[index]}
+          incrementIndex={incrementIndex}
+          decrementIndex={decrementIndex}
+          toggleSelectSong={toggleSelectSong}
+          selected={selected}
+        />
+      ) : (
+        <button>Submit</button>
+      )}
     </div>
-  ) : (
-    <p>Loading...</p>
   );
 };
 
