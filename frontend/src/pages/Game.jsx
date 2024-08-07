@@ -113,6 +113,7 @@ const Game = () => {
         answers={answers}
         placeAnswer={placeAnswer}
         selected={selected}
+        swap={swap}
       />
       {songs.length > 0 ? (
         <SongList
