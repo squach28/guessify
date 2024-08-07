@@ -1,11 +1,21 @@
 import axios from "axios";
 
 const SPOTIFY_TOP_SONGS_URL =
-  "https://api.spotify.com/v1/me/top/tracks?limit=10";
+  "https://api.spotify.com/v1/me/top/tracks?limit=10&time_range=short_term";
+
+const shuffleArray = (array) => {
+  for (var i = array.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var temp = array[i];
+    array[i] = array[j];
+    array[j] = temp;
+  }
+};
 
 export const getTopSongs = (req, res) => {
   let accessToken = "";
   let expirationDate = "";
+  const { shuffled } = req.query;
   if (req.newAccessToken) {
     accessToken = req.newAccessToken;
     expirationDate = req.newExpirationDate;
@@ -25,7 +35,6 @@ export const getTopSongs = (req, res) => {
       .then((result) => {
         res.cookie("access_token", accessToken);
         res.cookie("token_expiration_date", expirationDate);
-        console.log(result.data.items);
         const songs = result.data.items.map((item) => {
           return {
             id: item.id,
@@ -33,8 +42,11 @@ export const getTopSongs = (req, res) => {
             artists: item.artists,
           };
         });
+        if (shuffled) {
+          shuffleArray(songs);
+        }
         res.status(200).json(songs);
       })
-      .catch((e) => console.log("error"));
+      .catch((e) => console.log(e));
   }
 };
