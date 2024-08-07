@@ -70,6 +70,7 @@ const Game = () => {
           newAnswers[swapIndex].value = currValue;
           setAnswers(() => {
             setSwap(null);
+            localStorage.setItem("answers", newAnswers);
             return newAnswers;
           });
         } else {
