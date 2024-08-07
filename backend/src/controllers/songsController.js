@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const SPOTIFY_TOP_SONGS_URL = "https://api.spotify.com/v1/me/top/tracks";
+const SPOTIFY_TOP_SONGS_URL =
+  "https://api.spotify.com/v1/me/top/tracks?limit=10";
 
 export const getTopSongs = (req, res) => {
   let accessToken = "";
