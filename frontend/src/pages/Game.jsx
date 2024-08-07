@@ -8,17 +8,40 @@ import Navbar from "../components/Navbar";
 
 const Game = () => {
   const [songs, setSongs] = useState([]);
-  const [dragState, setDragState] = useState(false);
+  const [index, setIndex] = useState(0);
+  const [answers, setAnswers] = useState(Array(10).fill(""));
+  const [selected, setSelected] = useState(false);
   const navigate = useNavigate();
 
-  const handleDrag = (e) => {
-    setDragState(true);
-    console.log("dragging!");
+  const decrementIndex = () => {
+    setSelected(false);
+    setIndex((prev) => {
+      if (prev - 1 < 0) {
+        return songs.length - 1;
+      } else {
+        return prev - 1;
+      }
+    });
   };
 
-  const handleDragStop = (e) => {
-    setDragState(false);
-    console.log("dragging stopped!");
+  const incrementIndex = () => {
+    setSelected(false);
+    setIndex((prev) => (prev + 1) % songs.length);
+  };
+
+  const toggleSelectSong = (e) => {
+    setSelected((prev) => !prev);
+  };
+
+  const placeAnswer = (e) => {
+    const newAnswers = answers;
+    const answerIndex = e.target.id;
+    const currentSong = songs[index].name;
+    newAnswers[answerIndex] = currentSong;
+    setAnswers(() => {
+      setSelected(null);
+      return newAnswers;
+    });
   };
 
   useEffect(() => {
@@ -35,11 +58,18 @@ const Game = () => {
   return songs.length > 0 ? (
     <div className="w-full min-h-screen flex flex-col gap-2">
       <Navbar />
-      <AnswerList dragState={dragState} />
+      <AnswerList
+        currentSong={songs[index]}
+        answers={answers}
+        placeAnswer={placeAnswer}
+        selected={selected}
+      />
       <SongList
-        songs={songs}
-        handleDrag={handleDrag}
-        handleDragStop={handleDragStop}
+        song={songs[index]}
+        incrementIndex={incrementIndex}
+        decrementIndex={decrementIndex}
+        toggleSelectSong={toggleSelectSong}
+        selected={selected}
       />
     </div>
   ) : (

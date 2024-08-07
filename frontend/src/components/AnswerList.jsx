@@ -1,21 +1,19 @@
-import React, { useState } from "react";
+import React from "react";
 
-const AnswerList = ({ dragState }) => {
-  const [answers, setAnswers] = useState(Array(10).fill(""));
-  const handleMouseEnter = (e) => {
-    console.log(e);
-  };
+const AnswerList = ({ answers, selected, placeAnswer }) => {
+  console.log(answers);
   return (
     <ol
-      className={`list-decimal list-inside flex flex-col justify-between gap-5 max-w-lg`}
+      className={`w-full list-decimal list-inside flex flex-col justify-between gap-5`}
     >
       {answers.map((answer, index) => (
         <li
           key={index}
-          className={`border border-black p-1 rounded-md ${
-            dragState ? "border-blue-800 border-2" : "border-black"
+          id={index}
+          className={`border border-black p-1 w-[90%] md:max-w-lg mx-auto rounded-md ${
+            selected ? (answer === "" ? "border-blue-800" : "") : ""
           }`}
-          onDragOver={handleMouseEnter}
+          onClick={placeAnswer}
         >
           {answer}
         </li>
