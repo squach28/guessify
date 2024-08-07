@@ -19,6 +19,7 @@ const Game = () => {
   );
 
   const [selected, setSelected] = useState(false);
+  const [swap, setSwap] = useState(null);
   const navigate = useNavigate();
 
   const decrementIndex = () => {
@@ -41,19 +42,41 @@ const Game = () => {
     setSelected((prev) => !prev);
   };
 
-  const placeAnswer = (e) => {
-    const newAnswers = answers;
-    const answerIndex = e.target.id;
-    const currentSong = songs[index];
-    newAnswers[answerIndex].value = currentSong;
-    setAnswers(() => {
-      setSelected(null);
-      localStorage.setItem("answers", JSON.stringify(newAnswers));
-      return newAnswers;
-    });
-    const newSongs = songs.filter((song) => song.id !== currentSong.id);
-    setSongs(newSongs);
-    localStorage.setItem("songs", JSON.stringify(newSongs));
+  const placeAnswer = (e, value = null) => {
+    if (songs.length > 0) {
+      const newAnswers = answers;
+      const answerIndex = e.target.id;
+      const currentSong = songs[index];
+      newAnswers[answerIndex].value = currentSong;
+      setAnswers(() => {
+        setSelected(null);
+        localStorage.setItem("answers", JSON.stringify(newAnswers));
+        return newAnswers;
+      });
+      const newSongs = songs.filter((song) => song.id !== currentSong.id);
+      setSongs(newSongs);
+      localStorage.setItem("songs", JSON.stringify(newSongs));
+    } else {
+      if (value) {
+        if (swap) {
+          const valueId = value.id;
+          const currValue = value.value;
+          const newAnswers = answers;
+          const index = newAnswers.findIndex((answer) => answer.id === valueId);
+          newAnswers[index].value = swap.value;
+          const swapIndex = newAnswers.findIndex(
+            (answer) => answer.id === swap.id
+          );
+          newAnswers[swapIndex].value = currValue;
+          setAnswers(() => {
+            setSwap(null);
+            return newAnswers;
+          });
+        } else {
+          setSwap(value);
+        }
+      }
+    }
   };
 
   useEffect(() => {

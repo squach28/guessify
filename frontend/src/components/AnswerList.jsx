@@ -1,7 +1,6 @@
 import React from "react";
 
 const AnswerList = ({ answers, selected, placeAnswer }) => {
-  console.log(answers);
   return (
     <ol
       className={`w-full list-decimal list-inside flex flex-col justify-between gap-5`}
@@ -17,7 +16,7 @@ const AnswerList = ({ answers, selected, placeAnswer }) => {
                 : "border-blue-800 shadow-md"
               : "border-black"
           }`}
-          onClick={placeAnswer}
+          onClick={(e) => placeAnswer(e, answer)}
         >
           {answer.value ? answer.value.name : ""}
         </li>
