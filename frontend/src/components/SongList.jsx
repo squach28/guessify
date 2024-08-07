@@ -4,7 +4,7 @@ import rightArrowIcon from "../assets/icons/arrow-right-solid.svg";
 
 const SongItem = ({ song, selected, toggleSelectSong }) => {
   const getArtists = (song) => {
-    const artists = song.album.artists.map((artist) => {
+    const artists = song.artists.map((artist) => {
       return artist.name;
     });
 

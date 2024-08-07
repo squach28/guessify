@@ -5,11 +5,19 @@ import AnswerList from "../components/AnswerList";
 import { findCookieByKey } from "../util";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import { v4 as uuidv4 } from "uuid";
 
 const Game = () => {
   const [songs, setSongs] = useState([]);
   const [index, setIndex] = useState(0);
-  const [answers, setAnswers] = useState(Array(10).fill(""));
+  const [answers, setAnswers] = useState(
+    Array(10)
+      .fill()
+      .map(() => {
+        return { id: uuidv4(), value: null };
+      })
+  );
+
   const [selected, setSelected] = useState(false);
   const navigate = useNavigate();
 
@@ -37,7 +45,7 @@ const Game = () => {
     const newAnswers = answers;
     const answerIndex = e.target.id;
     const currentSong = songs[index];
-    newAnswers[answerIndex] = currentSong.name;
+    newAnswers[answerIndex].value = currentSong;
     setAnswers(() => {
       setSelected(null);
       localStorage.setItem("answers", JSON.stringify(newAnswers));
@@ -91,7 +99,9 @@ const Game = () => {
           selected={selected}
         />
       ) : (
-        <button>Submit</button>
+        <button className="bg-black text-white p-1 w-1/2 mx-auto rounded-md mt-4">
+          Submit
+        </button>
       )}
     </div>
   );
