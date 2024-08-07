@@ -59,6 +59,10 @@ const Game = () => {
     } else {
       if (value) {
         if (swap) {
+          if (swap.id === value.id) {
+            setSwap(null);
+            return;
+          }
           const valueId = value.id;
           const currValue = value.value;
           const newAnswers = answers;
