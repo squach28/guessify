@@ -16,14 +16,23 @@ const AnswerList = ({ answers, selected, placeAnswer, swap }) => {
         <li
           key={answer.id}
           id={index}
-          className={`border border-black p-1 w-[90%] md:max-w-lg mx-auto text-sm rounded-md hover:cursor-pointer ${
-            selected
-              ? answer.value
-                ? "border-black"
-                : "border-blue-800 shadow-md"
+          className={`border border-black p-1 w-[90%] md:max-w-lg mx-auto text-sm rounded-md hover:cursor-pointer 
+            ${
+              selected
+                ? answer.value
+                  ? "border-black"
+                  : "border-blue-800 shadow-md"
+                : ""
+            }
+          ${swap && swap.id === answer.id ? "border-orange-500" : ""}
+          ${
+            answer.correct !== null
+              ? answer.correct
+                ? "border-green-500"
+                : "border-red-500"
               : "border-black"
           }
-          ${swap && swap.id === answer.id ? "border-orange-500" : ""}`}
+          `}
           onClick={(e) => placeAnswer(e, answer)}
         >
           {answer.value

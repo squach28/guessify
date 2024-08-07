@@ -14,7 +14,7 @@ const Game = () => {
     Array(10)
       .fill()
       .map(() => {
-        return { id: uuidv4(), value: null };
+        return { id: uuidv4(), value: null, correct: null };
       })
   );
 
@@ -44,6 +44,9 @@ const Game = () => {
 
   const placeAnswer = (e, value = null) => {
     if (songs.length > 0) {
+      if (!selected) {
+        return;
+      }
       const newAnswers = answers;
       const answerIndex = e.target.id;
       const currentSong = songs[index];
@@ -93,7 +96,7 @@ const Game = () => {
         setSongs(topSongs);
       } else {
         axios
-          .get(`${import.meta.env.VITE_API_URL}/songs/top`, {
+          .get(`${import.meta.env.VITE_API_URL}/songs/top?shuffled=true`, {
             withCredentials: true,
           })
           .then((res) => {
@@ -108,6 +111,31 @@ const Game = () => {
       setAnswers(JSON.parse(prevAnswers));
     }
   }, []);
+
+  const gradeAnswers = (e) => {
+    axios
+      .get(`${import.meta.env.VITE_API_URL}/songs/top`, {
+        withCredentials: true,
+      })
+      .then((res) => {
+        const correctAnswers = res.data;
+        const correctedAnswers = answers;
+        for (let i = 0; i < correctAnswers.length; i++) {
+          const answer = correctAnswers[i];
+          const guess = answers[i];
+          if (answer.id !== guess.value.id) {
+            correctedAnswers[i].correct = false;
+          } else {
+            correctedAnswers[i].correct = true;
+          }
+        }
+        setAnswers(() => {
+          console.log(correctedAnswers);
+          localStorage.setItem("answers", JSON.stringify(correctedAnswers));
+          return correctedAnswers;
+        });
+      });
+  };
 
   return (
     <div className="w-full min-h-screen flex flex-col gap-2">
@@ -128,7 +156,10 @@ const Game = () => {
           selected={selected}
         />
       ) : (
-        <button className="bg-black text-white p-1 w-1/2 mx-auto rounded-md mt-4">
+        <button
+          className="bg-black text-white p-1 w-1/2 mx-auto rounded-md mt-4"
+          onClick={gradeAnswers}
+        >
           Submit
         </button>
       )}
