@@ -25,7 +25,15 @@ export const getTopSongs = (req, res) => {
       .then((result) => {
         res.cookie("access_token", accessToken);
         res.cookie("token_expiration_date", expirationDate);
-        res.status(200).json(result.data.items);
+        console.log(result.data.items);
+        const songs = result.data.items.map((item) => {
+          return {
+            id: item.id,
+            name: item.name,
+            artists: item.artists,
+          };
+        });
+        res.status(200).json(songs);
       })
       .catch((e) => console.log("error"));
   }
