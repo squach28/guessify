@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import { db } from "../utils/db.js";
 import { getUserByUsername, signup } from "../utils/queries.js";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 dotenv.config();
 
@@ -109,9 +110,16 @@ export const logIn = (req, res) => {
         .json({ message: `User with username ${username} doesn't exist` });
       return;
     }
-    const hashedPassword = result.rows[0].password;
+    const { id, username, password: hashedPassword } = result.rows[0];
+    console.log(hashedPassword);
     bcrypt.compare(password, hashedPassword).then((match) => {
       if (match) {
+        const accessToken = jwt.sign({ id, username }, process.env.JWT_SECRET, {
+          expiresIn: "1h",
+        });
+        res.cookie("access_token", accessToken, {
+          httpOnly: true,
+        });
         res.status(200).json({ message: "Sucess" });
       } else {
         res.status(400).json({ message: "Password is incorrect" });
