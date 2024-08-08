@@ -163,7 +163,7 @@ const SignUpForm = () => {
           htmlFor="username"
           className={`absolute left-2 transition-all px-2 text-md bg-white group-focus-within/username:-translate-y-6 group-focus-within/username:text-green-500 ${
             signUp.account.username !== "" ? "-translate-y-6 text-black" : ""
-          }`}
+          } ${signUp.errors.username !== "" ? "text-red-500" : ""}`}
         >
           Username
         </label>
@@ -186,7 +186,7 @@ const SignUpForm = () => {
           htmlFor="password"
           className={`absolute left-2 transition-all px-2 text-md bg-white group-focus-within/password:-translate-y-6 group-focus-within/password:text-green-500 ${
             signUp.account.password !== "" ? "-translate-y-6 text-black" : ""
-          }`}
+          } ${signUp.errors.password !== "" ? "text-red-500" : ""}`}
         >
           Password
         </label>
@@ -211,7 +211,7 @@ const SignUpForm = () => {
             signUp.account.confirmPassword !== ""
               ? "-translate-y-6 text-black"
               : ""
-          }`}
+          } ${signUp.errors.email !== "" ? "text-red-500" : ""}`}
         >
           Confirm Password
         </label>
