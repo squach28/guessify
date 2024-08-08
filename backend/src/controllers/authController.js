@@ -111,7 +111,6 @@ export const logIn = (req, res) => {
       return;
     }
     const { id, username, password: hashedPassword } = result.rows[0];
-    console.log(hashedPassword);
     bcrypt.compare(password, hashedPassword).then((match) => {
       if (match) {
         const accessToken = jwt.sign({ id, username }, process.env.JWT_SECRET, {
