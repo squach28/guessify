@@ -76,7 +76,7 @@ export const signUp = (req, res) => {
   const { username, email, password } = req.body;
   if (username === undefined || email === undefined || password === undefined) {
     res.status(400).json({
-      message: "Request body is missing username, email, or password",
+      message: "Request body is missing username, email, or password.",
     });
     return;
   }
@@ -96,6 +96,11 @@ export const signUp = (req, res) => {
 
 export const logIn = (req, res) => {
   const { username, password } = req.body;
+  if (username === undefined || password === undefined) {
+    res.status(400).json({
+      message: "Request body is missing username or password.",
+    });
+  }
   db.query(getUserByUsername, [username], (err, result) => {
     if (err) throw err;
     if (result.rowCount === 0) {
