@@ -3,7 +3,7 @@ import axios from "axios";
 import { generateRandomString } from "../utils/util.js";
 import dotenv from "dotenv";
 import { db } from "../utils/db.js";
-import { signup } from "../utils/queries.js";
+import { getUserByUsername, signup } from "../utils/queries.js";
 import bcrypt from "bcrypt";
 
 dotenv.config();
@@ -87,9 +87,30 @@ export const signUp = (req, res) => {
       db.query(signup, [email, username, hash], (err, result) => {
         if (err) throw err;
         const id = result.rows[0].id;
-        res.status(200).json({ id });
+        res.status(201).json({ id });
         return;
       });
+    });
+  });
+};
+
+export const logIn = (req, res) => {
+  const { username, password } = req.body;
+  db.query(getUserByUsername, [username], (err, result) => {
+    if (err) throw err;
+    if (result.rowCount === 0) {
+      res
+        .status(404)
+        .json({ message: `User with username ${username} doesn't exist` });
+      return;
+    }
+    const hashedPassword = result.rows[0].password;
+    bcrypt.compare(password, hashedPassword).then((match) => {
+      if (match) {
+        res.status(200).json({ message: "Sucess" });
+      } else {
+        res.status(400).json({ message: "Password is incorrect" });
+      }
     });
   });
 };
