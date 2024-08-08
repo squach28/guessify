@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Navbar from "../components/Navbar";
 import { Link } from "react-router-dom";
 import validator from "validator";
+import axios from "axios";
 
 const SignUpForm = () => {
   const [signUp, setSignUp] = useState({
@@ -43,13 +44,28 @@ const SignUpForm = () => {
             },
           });
         } else {
-          setSignUp({
-            ...signUp,
-            errors: {
-              ...signUp.errors,
-              [field]: "",
-            },
-          });
+          axios
+            .get(`${import.meta.env.VITE_API_URL}/users?email=${value}`)
+            .then(() => {
+              setSignUp({
+                ...signUp,
+                errors: {
+                  ...signUp.errors,
+                  [field]: "Email is already taken",
+                },
+              });
+            })
+            .catch((e) => {
+              if (e.status === 400) {
+                setSignUp({
+                  ...signUp,
+                  errors: {
+                    ...signUp.errors,
+                    [field]: "",
+                  },
+                });
+              }
+            });
         }
         break;
       case "username":
@@ -62,13 +78,29 @@ const SignUpForm = () => {
             },
           });
         } else {
-          setSignUp({
-            ...signUp,
-            errors: {
-              ...signUp.errors,
-              [field]: "",
-            },
-          });
+          axios
+            .get(`${import.meta.env.VITE_API_URL}/users?username=${value}`)
+            .then(() => {
+              setSignUp({
+                ...signUp,
+                errors: {
+                  ...signUp.errors,
+                  [field]: "Username is already taken",
+                },
+              });
+            })
+            .catch((e) => {
+              if (e.status === 400) {
+                console.log("doesnt exist");
+                setSignUp({
+                  ...signUp,
+                  errors: {
+                    ...signUp.errors,
+                    [field]: "",
+                  },
+                });
+              }
+            });
         }
         break;
       case "password":
