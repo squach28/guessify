@@ -21,45 +21,73 @@ const SignUpForm = () => {
 
   return (
     <form className="flex flex-col gap-6 mt-4 w-full">
-      <div className="flex items-center gap-2">
-        <label htmlFor="email">Email:</label>
+      <div className="flex items-center gap-2 relative group">
         <input
           id="email"
           name="email"
-          className="border p-1 rounded-md flex-1"
+          className="border px-2 py-3 rounded-md flex-1 text-md border-black focus:outline-green-500"
           type="email"
           onChange={handleFieldChange}
         />
+        <label
+          htmlFor="email"
+          className={`absolute left-2 transition-all px-2 text-md bg-white group-focus-within:-translate-y-6 group-focus-within:text-green-500 ${
+            signUp.email !== "" ? "-translate-y-6 text-black" : ""
+          }`}
+        >
+          Email
+        </label>
       </div>
-      <div className="flex items-center gap-2">
-        <label htmlFor="username">Username:</label>
+      <div className="flex items-center gap-2 relative group">
         <input
           id="username"
           name="username"
-          className="border p-1 rounded-md flex-1"
+          className="border px-2 py-3 rounded-md flex-1 text-md border-black focus:outline-green-500"
           type="text"
           onChange={handleFieldChange}
         />
+        <label
+          htmlFor="username"
+          className={`absolute left-2 transition-all px-2 text-md bg-white group-focus-within:-translate-y-6 group-focus-within:text-green-500 ${
+            signUp.username !== "" ? "-translate-y-6 text-black" : ""
+          }`}
+        >
+          Username
+        </label>
       </div>
-      <div className="flex items-center gap-2">
-        <label htmlFor="password">Password:</label>
+      <div className="flex items-center gap-2 relative group">
         <input
           id="password"
           name="password"
-          className="border p-1 rounded-md flex-1"
+          className="border px-2 py-3 rounded-md flex-1 text-md border-black focus:outline-green-500"
           type="password"
           onChange={handleFieldChange}
         />
+        <label
+          htmlFor="password"
+          className={`absolute left-2 transition-all px-2 text-md bg-white group-focus-within:-translate-y-6 group-focus-within:text-green-500 ${
+            signUp.password !== "" ? "-translate-y-6 text-black" : ""
+          }`}
+        >
+          Password
+        </label>
       </div>
-      <div className="flex items-center gap-2">
-        <label htmlFor="confirmPassword">Confirm Password:</label>
+      <div className="flex items-center gap-2 relative group">
         <input
           id="confirmPassword"
           name="confirmPassword"
-          className="border p-1 rounded-md flex-1"
+          className="border px-2 py-3 rounded-md flex-1 text-md border-black focus:outline-green-500"
           type="password"
           onChange={handleFieldChange}
         />
+        <label
+          htmlFor="confirmPassword"
+          className={`absolute left-2 transition-all px-2 text-md bg-white group-focus-within:-translate-y-6 group-focus-within:text-green-500 ${
+            signUp.confirmPassword !== "" ? "-translate-y-6 text-black" : ""
+          }`}
+        >
+          Confirm Password
+        </label>
       </div>
       <button className="bg-black text-white px-1 py-2 rounded-lg">
         Sign Up
