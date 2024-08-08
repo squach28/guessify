@@ -2,12 +2,17 @@ import querystring from "node:querystring";
 import axios from "axios";
 import { generateRandomString } from "../utils/util.js";
 import dotenv from "dotenv";
+import { db } from "../utils/db.js";
+import { signup } from "../utils/queries.js";
+import bcrypt from "bcrypt";
 
 dotenv.config();
 
-export const authLogin = (req, res) => {
+const SALT_ROUNDS = 10;
+
+export const spotifyLogin = (req, res) => {
   const state = generateRandomString(16);
-  const scope = "user-top-read";
+  const scope = "user-top-read user-read-email";
   const redirectUri = "http://localhost:3000/auth/accessToken";
   res.json({
     url:
@@ -65,4 +70,26 @@ export const getAccessToken = (req, res) => {
         res.redirect("http://localhost:5173");
       });
   }
+};
+
+export const signUp = (req, res) => {
+  const { username, email, password } = req.body;
+  if (username === undefined || email === undefined || password === undefined) {
+    res.status(400).json({
+      message: "Request body is missing username, email, or password",
+    });
+    return;
+  }
+  bcrypt.genSalt(SALT_ROUNDS, (err, salt) => {
+    if (err) throw err;
+    bcrypt.hash(password, salt, (err, hash) => {
+      if (err) throw err;
+      db.query(signup, [email, username, hash], (err, result) => {
+        if (err) throw err;
+        const id = result.rows[0].id;
+        res.status(200).json({ id });
+        return;
+      });
+    });
+  });
 };
