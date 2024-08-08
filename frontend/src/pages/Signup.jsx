@@ -21,7 +21,7 @@ const SignUpForm = () => {
 
   return (
     <form className="flex flex-col gap-6 mt-4 w-full">
-      <div className="flex items-center gap-2 relative group">
+      <div className="flex items-center gap-2 relative group/email">
         <input
           id="email"
           name="email"
@@ -31,14 +31,14 @@ const SignUpForm = () => {
         />
         <label
           htmlFor="email"
-          className={`absolute left-2 transition-all px-2 text-md bg-white group-focus-within:-translate-y-6 group-focus-within:text-green-500 ${
+          className={`absolute left-2 transition-all px-2 text-md bg-white group-focus-within/email:-translate-y-6 group-focus-within/email:text-green-500 ${
             signUp.email !== "" ? "-translate-y-6 text-black" : ""
           }`}
         >
           Email
         </label>
       </div>
-      <div className="flex items-center gap-2 relative group">
+      <div className="flex items-center gap-2 relative group/username">
         <input
           id="username"
           name="username"
@@ -48,14 +48,14 @@ const SignUpForm = () => {
         />
         <label
           htmlFor="username"
-          className={`absolute left-2 transition-all px-2 text-md bg-white group-focus-within:-translate-y-6 group-focus-within:text-green-500 ${
+          className={`absolute left-2 transition-all px-2 text-md bg-white group-focus-within/username:-translate-y-6 group-focus-within/username:text-green-500 ${
             signUp.username !== "" ? "-translate-y-6 text-black" : ""
           }`}
         >
           Username
         </label>
       </div>
-      <div className="flex items-center gap-2 relative group">
+      <div className="flex items-center gap-2 relative group/password">
         <input
           id="password"
           name="password"
@@ -65,14 +65,14 @@ const SignUpForm = () => {
         />
         <label
           htmlFor="password"
-          className={`absolute left-2 transition-all px-2 text-md bg-white group-focus-within:-translate-y-6 group-focus-within:text-green-500 ${
+          className={`absolute left-2 transition-all px-2 text-md bg-white group-focus-within/password:-translate-y-6 group-focus-within/password:text-green-500 ${
             signUp.password !== "" ? "-translate-y-6 text-black" : ""
           }`}
         >
           Password
         </label>
       </div>
-      <div className="flex items-center gap-2 relative group">
+      <div className="flex items-center gap-2 relative group/confirmPassword">
         <input
           id="confirmPassword"
           name="confirmPassword"
@@ -82,7 +82,7 @@ const SignUpForm = () => {
         />
         <label
           htmlFor="confirmPassword"
-          className={`absolute left-2 transition-all px-2 text-md bg-white group-focus-within:-translate-y-6 group-focus-within:text-green-500 ${
+          className={`absolute left-2 transition-all px-2 text-md bg-white group-focus-within/confirmPassword:-translate-y-6 group-focus-within/confirmPassword:text-green-500 ${
             signUp.confirmPassword !== "" ? "-translate-y-6 text-black" : ""
           }`}
         >
