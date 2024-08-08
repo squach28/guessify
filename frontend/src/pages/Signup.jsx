@@ -211,7 +211,7 @@ const SignUpForm = () => {
             signUp.account.confirmPassword !== ""
               ? "-translate-y-6 text-black"
               : ""
-          } ${signUp.errors.email !== "" ? "text-red-500" : ""}`}
+          } ${signUp.errors.confirmPassword !== "" ? "text-red-500" : ""}`}
         >
           Confirm Password
         </label>
