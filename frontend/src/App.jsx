@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { findCookieByKey } from "./util";
 import Navbar from "./components/Navbar";
 
@@ -25,12 +25,13 @@ const App = () => {
       <div className="w-[90%] md:max-w-lg mx-auto bg-white flex flex-col gap-4 items-center p-8 shadow-md rounded-md my-auto">
         <h1 className="text-2xl">Your Top Songs Quiz</h1>
         <p className="text-sm">Think you know your top songs on Spotify?</p>
-        <button
+        <Link
+          to="/login"
           className="bg-green-400 rounded-md px-4 py-1 text-lg"
           onClick={handleAuthorize}
         >
           Try it out!
-        </button>
+        </Link>
       </div>
     </div>
   );
