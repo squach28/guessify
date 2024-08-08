@@ -20,7 +20,7 @@ const GuessItem = ({ guess, placeGuess, swap, selected, index }) => {
           : "border-blue-800 shadow-md"
         : ""
     }
-  ${swap && swap.id === answer.id ? "border-orange-500" : ""}
+  ${swap && swap.id === guess.id ? "border-orange-500" : ""}
   ${
     guess.correct !== null
       ? guess.correct

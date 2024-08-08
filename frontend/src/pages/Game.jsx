@@ -71,13 +71,13 @@ const Game = () => {
           const newGuesses = guesses;
           const index = newGuesses.findIndex((guess) => guess.id === valueId);
           newGuesses[index].value = swap.value;
-          const swapIndex = newAnswers.findIndex(
+          const swapIndex = newGuesses.findIndex(
             (guess) => guess.id === swap.id
           );
           newGuesses[swapIndex].value = currValue;
           setGuesses(() => {
             setSwap(null);
-            localStorage.setItem("guesses", JSON.stringify(newAnswers));
+            localStorage.setItem("guesses", JSON.stringify(newGuesses));
             return newGuesses;
           });
         } else {
@@ -156,7 +156,7 @@ const Game = () => {
         />
       ) : (
         <button
-          className="bg-black text-white p-1 w-1/2 mx-auto rounded-md mt-4"
+          className="bg-black text-white p-1 w-1/2 md:max-w-lg mx-auto rounded-md mt-4"
           onClick={gradeAnswers}
         >
           Submit
