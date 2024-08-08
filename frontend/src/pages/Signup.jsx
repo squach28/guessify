@@ -91,7 +91,7 @@ const SignUpForm = () => {
         }
         break;
       case "confirmPassword":
-        const password = signUp.password;
+        const password = signUp.account.password;
         if (validator.isEmpty(value)) {
           setSignUp({
             ...signUp,
