@@ -45,6 +45,7 @@ const GuessesList = ({ guesses, selected, placeGuess, swap }) => {
     >
       {guesses.map((guess, index) => (
         <GuessItem
+          key={guess.id}
           guess={guess}
           placeGuess={placeGuess}
           swap={swap}

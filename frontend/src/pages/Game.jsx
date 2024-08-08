@@ -10,7 +10,7 @@ import { v4 as uuidv4 } from "uuid";
 const Game = () => {
   const [songs, setSongs] = useState([]);
   const [index, setIndex] = useState(0);
-  const [guesses, setAnswers] = useState(
+  const [guesses, setGuesses] = useState(
     Array(10)
       .fill()
       .map(() => {
@@ -47,14 +47,14 @@ const Game = () => {
       if (!selected) {
         return;
       }
-      const newAnswers = answers;
+      const newGuesses = guesses;
       const answerIndex = e.target.id;
       const currentSong = songs[index];
-      newAnswers[answerIndex].value = currentSong;
-      setAnswers(() => {
+      newGuesses[answerIndex].value = currentSong;
+      setGuesses(() => {
         setSelected(null);
-        localStorage.setItem("answers", JSON.stringify(newAnswers));
-        return newAnswers;
+        localStorage.setItem("guesses", JSON.stringify(newGuesses));
+        return newGuesses;
       });
       const newSongs = songs.filter((song) => song.id !== currentSong.id);
       setSongs(newSongs);
@@ -68,17 +68,17 @@ const Game = () => {
           }
           const valueId = value.id;
           const currValue = value.value;
-          const newAnswers = answers;
-          const index = newAnswers.findIndex((answer) => answer.id === valueId);
-          newAnswers[index].value = swap.value;
+          const newGuesses = guesses;
+          const index = newGuesses.findIndex((guess) => guess.id === valueId);
+          newGuesses[index].value = swap.value;
           const swapIndex = newAnswers.findIndex(
-            (answer) => answer.id === swap.id
+            (guess) => guess.id === swap.id
           );
-          newAnswers[swapIndex].value = currValue;
-          setAnswers(() => {
+          newGuesses[swapIndex].value = currValue;
+          setGuesses(() => {
             setSwap(null);
-            localStorage.setItem("answers", JSON.stringify(newAnswers));
-            return newAnswers;
+            localStorage.setItem("guesses", JSON.stringify(newAnswers));
+            return newGuesses;
           });
         } else {
           setSwap(value);
@@ -106,9 +106,9 @@ const Game = () => {
           });
       }
     }
-    if (localStorage.getItem("answers")) {
-      const prevAnswers = localStorage.getItem("answers");
-      setAnswers(JSON.parse(prevAnswers));
+    if (localStorage.getItem("guesses")) {
+      const prevGuesses = localStorage.getItem("guesses");
+      setGuesses(JSON.parse(prevGuesses));
     }
   }, []);
 
@@ -119,18 +119,18 @@ const Game = () => {
       })
       .then((res) => {
         const correctAnswers = res.data;
-        const correctedAnswers = answers;
+        const correctedAnswers = guesses;
         for (let i = 0; i < correctAnswers.length; i++) {
           const answer = correctAnswers[i];
-          const guess = answers[i];
+          const guess = guesses[i];
           if (answer.id !== guess.value.id) {
             correctedAnswers[i].correct = false;
           } else {
             correctedAnswers[i].correct = true;
           }
         }
-        setAnswers(() => {
-          localStorage.setItem("answers", JSON.stringify(correctedAnswers));
+        setGuesses(() => {
+          localStorage.setItem("guesses", JSON.stringify(correctedAnswers));
           return correctedAnswers;
         });
       });
