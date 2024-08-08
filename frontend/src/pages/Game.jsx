@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import SongList from "../components/SongList";
-import AnswerList from "../components/AnswerList";
+import GuessesList from "../components/GuessesList";
 import { findCookieByKey } from "../util";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
@@ -10,7 +10,7 @@ import { v4 as uuidv4 } from "uuid";
 const Game = () => {
   const [songs, setSongs] = useState([]);
   const [index, setIndex] = useState(0);
-  const [answers, setAnswers] = useState(
+  const [guesses, setAnswers] = useState(
     Array(10)
       .fill()
       .map(() => {
@@ -42,7 +42,7 @@ const Game = () => {
     setSelected((prev) => !prev);
   };
 
-  const placeAnswer = (e, value = null) => {
+  const placeGuess = (e, value = null) => {
     if (songs.length > 0) {
       if (!selected) {
         return;
@@ -130,7 +130,6 @@ const Game = () => {
           }
         }
         setAnswers(() => {
-          console.log(correctedAnswers);
           localStorage.setItem("answers", JSON.stringify(correctedAnswers));
           return correctedAnswers;
         });
@@ -140,10 +139,10 @@ const Game = () => {
   return (
     <div className="w-full min-h-screen flex flex-col gap-2">
       <Navbar />
-      <AnswerList
+      <GuessesList
         currentSong={songs[index]}
-        answers={answers}
-        placeAnswer={placeAnswer}
+        guesses={guesses}
+        placeGuess={placeGuess}
         selected={selected}
         swap={swap}
       />
