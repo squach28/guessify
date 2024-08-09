@@ -7,6 +7,7 @@ export const jwtAuthMiddleware = (req, res, next) => {
   const { access_token: accessToken } = req.cookies;
   if (accessToken === undefined) {
     res.status(400).json({ message: "Missing token" });
+    return;
   }
 
   try {
