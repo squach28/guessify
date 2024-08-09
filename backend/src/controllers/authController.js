@@ -73,6 +73,12 @@ export const getAccessToken = (req, res) => {
   }
 };
 
+const createUser = async (id, username, email) => {
+  return db.query(queries.createUser, [id, username, email], (err, result) => {
+    if (err) throw err;
+  });
+};
+
 export const signUp = (req, res) => {
   const { username, email, password } = req.body;
   if (username === undefined || email === undefined || password === undefined) {
@@ -87,7 +93,8 @@ export const signUp = (req, res) => {
       if (err) throw err;
       db.query(queries.signup, [email, username, hash], (err, result) => {
         if (err) throw err;
-        const { id, username } = result.rows[0];
+        const { id } = result.rows[0];
+        createUser(id, username, email);
         const accessToken = jwt.sign({ id, username }, process.env.JWT_SECRET, {
           expiresIn: "1 day",
         });
