@@ -6,9 +6,7 @@ dotenv.config();
 export const jwtAuthMiddleware = (req, res, next) => {
   const { access_token: accessToken } = req.cookies;
   if (accessToken === undefined) {
-    res
-      .status(403)
-      .json({ message: "You don't have permission to access this." });
+    res.status(400).json({ message: "Missing token" });
   }
 
   try {
