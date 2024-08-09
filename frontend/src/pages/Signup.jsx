@@ -1,162 +1,129 @@
-import React, { useState } from "react";
+import React, { useReducer, useState } from "react";
 import Navbar from "../components/Navbar";
 import { Link } from "react-router-dom";
 import validator from "validator";
 import axios from "axios";
+import { signUpReducer } from "../reducers/signUpReducer";
 
 const SignUpForm = () => {
-  const [signUp, setSignUp] = useState({
+  const [signUp, dispatchSignUp] = useReducer(signUpReducer, {
     account: { email: "", username: "", password: "", confirmPassword: "" },
     errors: { email: "", username: "", password: "", confirmPassword: "" },
   });
 
+  const hasErrors = () => {
+    for (const [_, value] of Object.entries(signUp.errors)) {
+      if (!validator.isEmpty(value)) {
+        return true;
+      }
+    }
+  };
+
+  const hasEmptyFields = () => {
+    for (const [_, value] of Object.entries(signUp.account)) {
+      if (validator.isEmpty(value)) {
+        return true;
+      }
+    }
+    return false;
+  };
+
   const handleFieldChange = (e) => {
     const name = e.target.name;
     const value = e.target.value;
-    setSignUp({
-      ...signUp,
-      account: {
-        ...signUp.account,
-        [name]: value,
+    dispatchSignUp({
+      type: "UPDATE_ACCOUNT",
+      payload: {
+        name,
+        value,
       },
     });
   };
 
   const handleFieldBlur = (e) => {
-    const field = e.target.name;
+    const name = e.target.name;
     const value = e.target.value;
-    switch (field) {
-      case "email":
-        if (validator.isEmpty(value)) {
-          setSignUp({
-            ...signUp,
-            errors: {
-              ...signUp.errors,
-              [field]: "Email cannot be empty",
+    if (validator.isEmpty(value)) {
+      dispatchSignUp({
+        type: "EMPTY_FIELD",
+        payload: {
+          name,
+        },
+      });
+      return;
+    } else {
+      dispatchSignUp({
+        type: "CLEAR_ERROR",
+        payload: {
+          name,
+        },
+      });
+    }
+    if (name === "email") {
+      if (!validator.isEmail(value)) {
+        dispatchSignUp({
+          type: "INVALID_EMAIL",
+        });
+        return;
+      }
+
+      axios
+        .get(`${import.meta.env.VITE_API_URL}/users?email=${value}`)
+        .then(() =>
+          dispatchSignUp({
+            type: "EMAIL_ALREADY_TAKEN",
+          })
+        )
+        .catch(() =>
+          dispatchSignUp({
+            type: "CLEAR_ERROR",
+            payload: {
+              name,
             },
-          });
-        } else if (!validator.isEmail(value)) {
-          setSignUp({
-            ...signUp,
-            errors: {
-              ...signUp.errors,
-              [field]: "Email is not valid",
+          })
+        );
+      return;
+    }
+
+    if (name === "username") {
+      axios
+        .get(`${import.meta.env.VITE_API_URL}/users?username=${value}`)
+        .then(() =>
+          dispatchSignUp({
+            type: "USERNAME_ALREADY_TAKEN",
+          })
+        )
+        .catch(() =>
+          dispatchSignUp({
+            type: "CLEAR_ERROR",
+            payload: {
+              name,
             },
-          });
-        } else {
-          axios
-            .get(`${import.meta.env.VITE_API_URL}/users?email=${value}`)
-            .then(() => {
-              setSignUp({
-                ...signUp,
-                errors: {
-                  ...signUp.errors,
-                  [field]: "Email is already taken",
-                },
-              });
-            })
-            .catch((e) => {
-              if (e.status === 400) {
-                setSignUp({
-                  ...signUp,
-                  errors: {
-                    ...signUp.errors,
-                    [field]: "",
-                  },
-                });
-              }
-            });
-        }
-        break;
-      case "username":
-        if (validator.isEmpty(value)) {
-          setSignUp({
-            ...signUp,
-            errors: {
-              ...signUp.errors,
-              [field]: "Username cannot be empty",
-            },
-          });
-        } else {
-          axios
-            .get(`${import.meta.env.VITE_API_URL}/users?username=${value}`)
-            .then(() => {
-              setSignUp({
-                ...signUp,
-                errors: {
-                  ...signUp.errors,
-                  [field]: "Username is already taken",
-                },
-              });
-            })
-            .catch((e) => {
-              if (e.status === 400) {
-                console.log("doesnt exist");
-                setSignUp({
-                  ...signUp,
-                  errors: {
-                    ...signUp.errors,
-                    [field]: "",
-                  },
-                });
-              }
-            });
-        }
-        break;
-      case "password":
-        if (validator.isEmpty(value)) {
-          setSignUp({
-            ...signUp,
-            errors: {
-              ...signUp.errors,
-              [field]: "Password cannot be empty",
-            },
-          });
-        } else {
-          setSignUp({
-            ...signUp,
-            errors: {
-              ...signUp.errors,
-              [field]: "",
-            },
-          });
-        }
-        break;
-      case "confirmPassword":
-        const password = signUp.account.password;
-        if (validator.isEmpty(value)) {
-          setSignUp({
-            ...signUp,
-            errors: {
-              ...signUp.errors,
-              [field]: "Confirm Password cannot be empty",
-            },
-          });
-        } else if (password !== value) {
-          setSignUp({
-            ...signUp,
-            errors: {
-              ...signUp.errors,
-              [field]: "Passwords don't match",
-            },
-          });
-        } else {
-          setSignUp({
-            ...signUp,
-            errors: {
-              ...signUp.errors,
-              [field]: "",
-            },
-          });
-        }
-        break;
-      default:
-        throw new Error();
+          })
+        );
+      return;
+    }
+
+    if (name === "confirmPassword") {
+      if (signUp.account.password !== value) {
+        dispatchSignUp({
+          type: "MISMATCHING_PASSWORDS",
+        });
+      } else {
+        dispatchSignUp({
+          type: "CLEAR_ERROR",
+          payload: {
+            name,
+          },
+        });
+      }
     }
   };
 
+  const handleSignUp = () => {};
+
   return (
-    <form className="flex flex-col gap-4 mt-4 w-full">
+    <form className="flex flex-col gap-4 mt-4 w-full" onSubmit={handleSignUp}>
       <div className="flex items-center gap-2 relative group/email">
         <input
           id="email"
@@ -253,7 +220,10 @@ const SignUpForm = () => {
           {signUp.errors.confirmPassword}
         </p>
       ) : null}
-      <button className="bg-black text-white px-1 py-2 rounded-lg">
+      <button
+        className="bg-black text-white px-1 py-2 rounded-lg disabled:bg-slate-300 disabled:text-black"
+        disabled={hasEmptyFields() || hasErrors()}
+      >
         Sign Up
       </button>
     </form>
