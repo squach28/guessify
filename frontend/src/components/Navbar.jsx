@@ -19,7 +19,7 @@ const Navbar = ({ hideAuth }) => {
         <Link to="/home">Guessify</Link>
       </li>
       {hideAuth ? null : user ? (
-        <p>{user.email}</p>
+        <p>{user.username}</p>
       ) : (
         <div className="flex items-center gap-4">
           <li>
