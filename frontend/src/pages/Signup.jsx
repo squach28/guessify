@@ -10,6 +10,7 @@ const SignUpForm = () => {
     account: { email: "", username: "", password: "", confirmPassword: "" },
     errors: { email: "", username: "", password: "", confirmPassword: "" },
   });
+  const [signUpResult, setSignUpResult] = useState(null);
 
   const hasErrors = () => {
     for (const [_, value] of Object.entries(signUp.errors)) {

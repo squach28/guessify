@@ -3,13 +3,46 @@ export const signUpReducer = (state, action) => {
     case "UPDATE_ACCOUNT": {
       const fieldName = action.payload.name;
       const fieldValue = action.payload.value;
-      return {
-        ...state,
-        account: {
-          ...state.account,
-          [fieldName]: fieldValue,
-        },
-      };
+      if (fieldName === "confirmPassword") {
+        const password = state.account.password;
+        if (fieldValue !== password) {
+          return {
+            ...state,
+            account: {
+              ...state.account,
+              [fieldName]: fieldValue,
+            },
+            errors: {
+              ...state.errors,
+              [fieldName]: `Passwords don't match`,
+            },
+          };
+        } else {
+          return {
+            ...state,
+            account: {
+              ...state.account,
+              [fieldName]: fieldValue,
+            },
+            errors: {
+              ...state.errors,
+              [fieldName]: ``,
+            },
+          };
+        }
+      } else {
+        return {
+          ...state,
+          account: {
+            ...state.account,
+            [fieldName]: fieldValue,
+          },
+          errors: {
+            ...state.errors,
+            [fieldName]: "",
+          },
+        };
+      }
     }
 
     case "EMPTY_FIELD": {
