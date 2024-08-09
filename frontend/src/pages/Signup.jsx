@@ -271,9 +271,9 @@ const SignUpForm = () => {
       ) : null}
       <button
         className="bg-black text-white px-1 py-2 rounded-lg disabled:bg-slate-300 disabled:text-black"
-        disabled={hasEmptyFields() || hasErrors()}
+        disabled={hasEmptyFields() || hasErrors() || signUpResult.isLoading}
       >
-        Sign Up
+        {signUpResult.isLoading ? "Loading..." : "Sign Up"}
       </button>
     </form>
   );
