@@ -1,6 +1,6 @@
 import React, { useReducer, useState } from "react";
 import Navbar from "../components/Navbar";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import validator from "validator";
 import axios from "axios";
 import { signUpReducer } from "../reducers/signUpReducer";
@@ -15,6 +15,7 @@ const SignUpForm = () => {
     hasError: false,
     data: null,
   });
+  const navigate = useNavigate();
 
   const hasErrors = () => {
     for (const [_, value] of Object.entries(signUp.errors)) {
@@ -139,7 +140,7 @@ const SignUpForm = () => {
           data: res.data,
         })
       )
-      .catch((e) =>
+      .catch(() =>
         setSignUpResult({
           ...signUpResult,
           isLoading: false,
@@ -151,10 +152,11 @@ const SignUpForm = () => {
   const handleSignUp = (e) => {
     e.preventDefault();
     const user = signUp.account;
-    registerUser(user).then((res) => {
-      console.log(res);
-      if (res) {
+    registerUser(user).then(() => {
+      if (!signUpResult.hasError) {
+        navigate("/home", { replace: true });
       } else {
+        // TODO: provide error msg
       }
     });
   };
