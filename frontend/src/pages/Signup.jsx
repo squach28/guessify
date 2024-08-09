@@ -10,7 +10,11 @@ const SignUpForm = () => {
     account: { email: "", username: "", password: "", confirmPassword: "" },
     errors: { email: "", username: "", password: "", confirmPassword: "" },
   });
-  const [signUpResult, setSignUpResult] = useState(null);
+  const [signUpResult, setSignUpResult] = useState({
+    isLoading: false,
+    hasError: false,
+    data: null,
+  });
 
   const hasErrors = () => {
     for (const [_, value] of Object.entries(signUp.errors)) {
@@ -121,7 +125,39 @@ const SignUpForm = () => {
     }
   };
 
-  const handleSignUp = () => {};
+  const registerUser = async (user) => {
+    setSignUpResult({
+      ...signUpResult,
+      isLoading: true,
+    });
+    return axios
+      .post(`${import.meta.env.VITE_API_URL}/auth/signup`, user)
+      .then((res) =>
+        setSignUpResult({
+          ...signUpResult,
+          isLoading: false,
+          data: res.data,
+        })
+      )
+      .catch((e) =>
+        setSignUpResult({
+          ...signUpResult,
+          isLoading: false,
+          hasError: true,
+        })
+      );
+  };
+
+  const handleSignUp = (e) => {
+    e.preventDefault();
+    const user = signUp.account;
+    registerUser(user).then((res) => {
+      console.log(res);
+      if (res) {
+      } else {
+      }
+    });
+  };
 
   return (
     <form className="flex flex-col gap-4 mt-4 w-full" onSubmit={handleSignUp}>
