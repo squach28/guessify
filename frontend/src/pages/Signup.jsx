@@ -128,8 +128,10 @@ const SignUpForm = () => {
         <input
           id="email"
           name="email"
-          className={`border px-2 py-3 rounded-md flex-1 text-md border-black focus:outline-green-500 ${
-            signUp.errors.email !== "" ? "border-red-500" : ""
+          className={`border px-2 py-3 rounded-md flex-1 text-md border-black focus:shadow-md focus:outline-black ${
+            signUp.errors.email !== ""
+              ? "border-red-500 focus:outline-red-500"
+              : ""
           }`}
           type="email"
           onChange={handleFieldChange}
@@ -137,7 +139,7 @@ const SignUpForm = () => {
         />
         <label
           htmlFor="email"
-          className={`absolute left-2 transition-all px-2 text-md bg-white group-focus-within/email:-translate-y-6 group-focus-within/email:text-green-500 ${
+          className={`absolute left-2 transition-all px-2 text-md bg-white group-focus-within/email:-translate-y-6 ${
             signUp.account.email !== "" ? "-translate-y-6 text-black" : ""
           } ${signUp.errors.email !== "" ? "text-red-500" : ""}`}
         >
@@ -151,8 +153,10 @@ const SignUpForm = () => {
         <input
           id="username"
           name="username"
-          className={`border px-2 py-3 rounded-md flex-1 text-md border-black focus:outline-green-500 ${
-            signUp.errors.username !== "" ? "border-red-500" : ""
+          className={`border px-2 py-3 rounded-md flex-1 text-md border-black focus:shadow-md focus:outline-black ${
+            signUp.errors.username !== ""
+              ? "border-red-500 focus:outline-red-500"
+              : ""
           }`}
           type="text"
           onChange={handleFieldChange}
@@ -160,9 +164,13 @@ const SignUpForm = () => {
         />
         <label
           htmlFor="username"
-          className={`absolute left-2 transition-all px-2 text-md bg-white group-focus-within/username:-translate-y-6 group-focus-within/username:text-green-500 ${
+          className={`absolute left-2 transition-all px-2 text-md bg-white group-focus-within/username:-translate-y-6  ${
             signUp.account.username !== "" ? "-translate-y-6 text-black" : ""
-          } ${signUp.errors.username !== "" ? "text-red-500" : ""}`}
+          } ${
+            signUp.errors.username !== ""
+              ? "text-red-500 focus:outline-red-500"
+              : ""
+          }`}
         >
           Username
         </label>
@@ -174,8 +182,10 @@ const SignUpForm = () => {
         <input
           id="password"
           name="password"
-          className={`border px-2 py-3 rounded-md flex-1 text-md border-black focus:outline-green-500 ${
-            signUp.errors.password !== "" ? "border-red-500" : ""
+          className={`border px-2 py-3 rounded-md flex-1 text-md border-black focus:shadow-md focus:outline-black ${
+            signUp.errors.password !== ""
+              ? "border-red-500 focus:outline-red-500"
+              : ""
           }`}
           type="password"
           onChange={handleFieldChange}
@@ -183,7 +193,7 @@ const SignUpForm = () => {
         />
         <label
           htmlFor="password"
-          className={`absolute left-2 transition-all px-2 text-md bg-white group-focus-within/password:-translate-y-6 group-focus-within/password:text-green-500 ${
+          className={`absolute left-2 transition-all px-2 text-md bg-white group-focus-within/password:-translate-y-6  ${
             signUp.account.password !== "" ? "-translate-y-6 text-black" : ""
           } ${signUp.errors.password !== "" ? "text-red-500" : ""}`}
         >
@@ -197,8 +207,10 @@ const SignUpForm = () => {
         <input
           id="confirmPassword"
           name="confirmPassword"
-          className={`border px-2 py-3 rounded-md flex-1 text-md border-black focus:outline-green-500 ${
-            signUp.errors.confirmPassword !== "" ? "border-red-500" : ""
+          className={`border px-2 py-3 rounded-md flex-1 text-md border-black focus:shadow-md focus:outline-black ${
+            signUp.errors.confirmPassword !== ""
+              ? "border-red-500 focus:outline-red-500"
+              : ""
           }`}
           type="password"
           onChange={handleFieldChange}
@@ -206,7 +218,7 @@ const SignUpForm = () => {
         />
         <label
           htmlFor="confirmPassword"
-          className={`absolute left-2 transition-all px-2 text-md bg-white group-focus-within/confirmPassword:-translate-y-6 group-focus-within/confirmPassword:text-green-500 ${
+          className={`absolute left-2 transition-all px-2 text-md bg-white group-focus-within/confirmPassword:-translate-y-6  ${
             signUp.account.confirmPassword !== ""
               ? "-translate-y-6 text-black"
               : ""
