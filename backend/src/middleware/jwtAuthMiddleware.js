@@ -5,7 +5,6 @@ dotenv.config();
 
 export const jwtAuthMiddleware = (req, res, next) => {
   const { access_token: accessToken } = req.cookies;
-  console.log(accessToken);
   if (accessToken === undefined) {
     res
       .status(403)

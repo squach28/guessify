@@ -27,9 +27,7 @@ export const getUser = (req, res) => {
 
 export const getCurrentUser = (req, res) => {
   const userId = req.userId;
-  console.log("hello");
   db.query(queries.getUserById, [userId], (err, result) => {
-    console.log("fetching");
     if (err) throw err;
     if (result.rowCount === 0) {
       res.status(404).json({ message: "User not found" });

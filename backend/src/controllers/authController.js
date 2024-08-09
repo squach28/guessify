@@ -91,7 +91,7 @@ export const signUp = (req, res) => {
         const accessToken = jwt.sign({ id, username }, process.env.JWT_SECRET, {
           expiresIn: "1 day",
         });
-        res.cookie("userId", id, {
+        res.cookie("user_id", id, {
           httpOnly: true,
         });
         res.cookie("access_token", accessToken, {
