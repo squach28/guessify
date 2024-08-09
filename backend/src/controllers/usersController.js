@@ -1,9 +1,9 @@
-import { getUserByEmail, getUserByUsername } from "../utils/queries.js";
+import { queries } from "../utils/queries.js";
 import { db } from "../utils/db.js";
 export const getUser = (req, res) => {
   const { username, email } = req.query;
   if (username) {
-    db.query(getUserByUsername, [username], (err, result) => {
+    db.query(queries.getUserByUsername, [username], (err, result) => {
       if (err) throw err;
       if (result.rowCount === 0) {
         res.status(400).json({ message: `User doesn't exist` });
@@ -12,7 +12,7 @@ export const getUser = (req, res) => {
       }
     });
   } else if (email) {
-    db.query(getUserByEmail, [email], (err, result) => {
+    db.query(queries.getUserByEmail, [email], (err, result) => {
       if (err) throw err;
       if (result.rowCount === 0) {
         res.status(400).json({ message: `User doesn't exist` });
@@ -23,6 +23,21 @@ export const getUser = (req, res) => {
   } else {
     res.status(400).json({ message: "Missing username or email query" });
   }
+};
+
+export const getCurrentUser = (req, res) => {
+  const userId = req.userId;
+  console.log("hello");
+  db.query(queries.getUserById, [userId], (err, result) => {
+    console.log("fetching");
+    if (err) throw err;
+    if (result.rowCount === 0) {
+      res.status(404).json({ message: "User not found" });
+    } else {
+      const user = result.rows[0];
+      res.status(200).json({ email: user.email });
+    }
+  });
 };
 
 export const getUserById = (req, res) => {};

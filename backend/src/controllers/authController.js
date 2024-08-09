@@ -3,7 +3,7 @@ import axios from "axios";
 import { generateRandomString } from "../utils/util.js";
 import dotenv from "dotenv";
 import { db } from "../utils/db.js";
-import { getUserByUsername, signup } from "../utils/queries.js";
+import { queries } from "../utils/queries.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
@@ -85,11 +85,14 @@ export const signUp = (req, res) => {
     if (err) throw err;
     bcrypt.hash(password, salt, (err, hash) => {
       if (err) throw err;
-      db.query(signup, [email, username, hash], (err, result) => {
+      db.query(queries.signup, [email, username, hash], (err, result) => {
         if (err) throw err;
         const { id, username } = result.rows[0];
         const accessToken = jwt.sign({ id, username }, process.env.JWT_SECRET, {
           expiresIn: "1 day",
+        });
+        res.cookie("userId", id, {
+          httpOnly: true,
         });
         res.cookie("access_token", accessToken, {
           httpOnly: true,
@@ -108,7 +111,7 @@ export const logIn = (req, res) => {
       message: "Request body is missing username or password.",
     });
   }
-  db.query(getUserByUsername, [username], (err, result) => {
+  db.query(queries.getUserByUsername, [username], (err, result) => {
     if (err) throw err;
     if (result.rowCount === 0) {
       res
