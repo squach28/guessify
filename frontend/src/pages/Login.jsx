@@ -1,8 +1,9 @@
 import React, { useReducer, useState } from "react";
 import Navbar from "../components/Navbar";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { logInReducer } from "../reducers/logInReducer";
 import validator from "validator";
+import axios from "axios";
 
 const LoginForm = () => {
   const [logIn, dispatchLogIn] = useReducer(logInReducer, {
@@ -15,6 +16,7 @@ const LoginForm = () => {
       password: "",
     },
   });
+  const navigate = useNavigate();
 
   const hasErrors = () => {
     for (const [_, value] of Object.entries(logIn.errors)) {
@@ -76,8 +78,41 @@ const LoginForm = () => {
     }
   };
 
+  const login = async (credentials) => {
+    return axios
+      .post(`${import.meta.env.VITE_API_URL}/auth/login`, credentials, {
+        withCredentials: true,
+      })
+      .then((res) => true)
+      .catch((e) => {
+        switch (e.response.data.type) {
+          case "USER_DOES_NOT_EXIST":
+            dispatchLogIn({
+              type: "USERNAME_DOES_NOT_EXIST",
+            });
+            return false;
+          case "WRONG_PASSWORD":
+            dispatchLogIn({
+              type: "WRONG_PASSWORD",
+            });
+            return false;
+          default:
+            throw new Error();
+        }
+      });
+  };
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    login(logIn.account).then((success) => {
+      if (success) {
+        navigate("/home");
+      }
+    });
+  };
+
   return (
-    <form className="flex flex-col gap-4 mt-4 w-full">
+    <form className="flex flex-col gap-4 mt-4 w-full" onSubmit={handleLogin}>
       <div className="flex items-center gap-2 relative group/username">
         <input
           id="username"
