@@ -31,7 +31,7 @@ const Navbar = ({ hideAuth }) => {
   return (
     <ul className="flex justify-between p-4 bg-black text-white">
       <li>
-        <Link to="/home">Guessify</Link>
+        <Link to={`${user ? "/home" : "/"}`}>Guessify</Link>
       </li>
       {hideAuth ? null : user ? (
         <p onClick={handleLogout}>{user.username}</p>
