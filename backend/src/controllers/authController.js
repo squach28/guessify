@@ -87,7 +87,13 @@ export const signUp = (req, res) => {
       if (err) throw err;
       db.query(signup, [email, username, hash], (err, result) => {
         if (err) throw err;
-        const id = result.rows[0].id;
+        const { id, username } = result.rows[0];
+        const accessToken = jwt.sign({ id, username }, process.env.JWT_SECRET, {
+          expiresIn: "1 day",
+        });
+        res.cookie("access_token", accessToken, {
+          httpOnly: true,
+        });
         res.status(201).json({ id });
         return;
       });
@@ -114,7 +120,7 @@ export const logIn = (req, res) => {
     bcrypt.compare(password, hashedPassword).then((match) => {
       if (match) {
         const accessToken = jwt.sign({ id, username }, process.env.JWT_SECRET, {
-          expiresIn: "1h",
+          expiresIn: "1 day",
         });
         res.cookie("access_token", accessToken, {
           httpOnly: true,
