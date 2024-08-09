@@ -117,17 +117,21 @@ export const logIn = (req, res) => {
     res.status(400).json({
       message: "Request body is missing username or password.",
     });
+    return;
   }
-  db.query(queries.getUserByUsername, [username], (err, result) => {
+  db.query(queries.getUserByUsernameAuth, [username], (err, result) => {
     if (err) throw err;
     if (result.rowCount === 0) {
-      res
-        .status(404)
-        .json({ message: `User with username ${username} doesn't exist` });
+      res.status(404).json({
+        type: "USER_DOES_NOT_EXIST",
+        message: `User with username ${username} doesn't exist`,
+      });
       return;
     }
-    const { id, username, password: hashedPassword } = result.rows[0];
-    bcrypt.compare(password, hashedPassword).then((match) => {
+    const id = result.rows[0].id;
+    const hashedPassword = result.rows[0].password;
+    bcrypt.compare(password, hashedPassword, (err, match) => {
+      if (err) throw err;
       if (match) {
         const accessToken = jwt.sign({ id, username }, process.env.JWT_SECRET, {
           expiresIn: "1 day",
@@ -136,8 +140,12 @@ export const logIn = (req, res) => {
           httpOnly: true,
         });
         res.status(200).json({ message: "Sucess" });
+        return;
       } else {
-        res.status(400).json({ message: "Password is incorrect" });
+        res
+          .status(400)
+          .json({ type: "WRONG_PASSWORD", message: "Password is incorrect" });
+        return;
       }
     });
   });
