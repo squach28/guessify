@@ -12,11 +12,11 @@ export const jwtAuthMiddleware = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(accessToken, process.env.JWT_SECRET);
-
     req.userId = decoded.id;
     next();
   } catch (e) {
     console.log(e);
     res.status(400).json({ error: "Invalid token" });
+    return;
   }
 };

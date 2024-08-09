@@ -11,6 +11,25 @@ dotenv.config();
 
 const SALT_ROUNDS = 10;
 
+export const connectedWithSpotify = (req, res) => {
+  const userId = req.userId;
+
+  db.query(queries.getUserById, [userId], (err, result) => {
+    if (err) throw err;
+    if (result.rowCount === 0) {
+      res.status(404).json({ message: `User doesn't exist` });
+    }
+    const { spotify_id: spotifyId } = result.rows[0];
+    if (spotifyId === null) {
+      res.status(200).json({ connected: false });
+      return;
+    } else {
+      res.status(200).json({ connected: true });
+      return;
+    }
+  });
+};
+
 export const spotifyLogin = (req, res) => {
   const state = generateRandomString(16);
   const scope = "user-top-read user-read-email";
@@ -65,9 +84,9 @@ export const getAccessToken = (req, res) => {
         const date = new Date();
         const hourInSeconds = 60 * 60 * 1000;
         date.setTime(date.getTime() + hourInSeconds);
-        res.cookie("access_token", result.data.access_token);
-        res.cookie("refresh_token", result.data.refresh_token);
-        res.cookie("token_expiration_date", date);
+        res.cookie("spotify_access_token", result.data.access_token);
+        res.cookie("spotify_refresh_token", result.data.refresh_token);
+        res.cookie("spotify_token_expiration_date", date);
         res.redirect("http://localhost:5173");
       });
   }
