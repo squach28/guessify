@@ -143,7 +143,7 @@ const SignUpForm = () => {
             signUp.account.email !== "" ? "-translate-y-6 text-black" : ""
           } ${signUp.errors.email !== "" ? "text-red-500" : ""}`}
         >
-          Email
+          Email*
         </label>
       </div>
       {signUp.errors.email ? (
@@ -172,7 +172,7 @@ const SignUpForm = () => {
               : ""
           }`}
         >
-          Username
+          Username*
         </label>
       </div>
       {signUp.errors.username ? (
@@ -197,7 +197,7 @@ const SignUpForm = () => {
             signUp.account.password !== "" ? "-translate-y-6 text-black" : ""
           } ${signUp.errors.password !== "" ? "text-red-500" : ""}`}
         >
-          Password
+          Password*
         </label>
       </div>
       {signUp.errors.password ? (
@@ -224,7 +224,7 @@ const SignUpForm = () => {
               : ""
           } ${signUp.errors.confirmPassword !== "" ? "text-red-500" : ""}`}
         >
-          Confirm Password
+          Confirm Password*
         </label>
       </div>
       {signUp.errors.confirmPassword ? (
