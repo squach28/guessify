@@ -32,8 +32,8 @@ export const getCurrentUser = (req, res) => {
     if (result.rowCount === 0) {
       res.status(404).json({ message: "User not found" });
     } else {
-      const user = result.rows[0];
-      res.status(200).json({ email: user.email });
+      const { id, username, email } = result.rows[0];
+      res.status(200).json({ id, username, email });
     }
   });
 };

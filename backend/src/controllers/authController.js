@@ -142,3 +142,8 @@ export const logIn = (req, res) => {
     });
   });
 };
+
+export const logOut = (req, res) => {
+  res.clearCookie("access_token");
+  res.status(200).json({ message: "Successfully logged out" });
+};
