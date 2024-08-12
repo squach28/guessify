@@ -32,20 +32,28 @@ export const connectedWithSpotify = (req, res) => {
 
 export const spotifyLogin = (req, res) => {
   const state = generateRandomString(16);
-  const scope = "user-top-read user-read-email";
-  const redirectUri = "http://localhost:3000/auth/accessToken";
-  res.json({
-    url:
-      "https://accounts.spotify.com/authorize?" +
-      querystring.stringify({
-        response_type: "code",
-        client_id: process.env.SPOTIFY_CLIENT_ID,
-        scope,
-        redirect_uri: redirectUri,
-        state,
-        show_dialog: true,
-      }),
-  });
+  const userId = req.userId;
+  db.query(
+    queries.updateSpotifyStateByUserId,
+    [state, userId],
+    (err, result) => {
+      if (err) throw err;
+      const scope = "user-top-read user-read-email";
+      const redirectUri = `http://localhost:3000/auth/accessToken`;
+      res.json({
+        url:
+          "https://accounts.spotify.com/authorize?" +
+          querystring.stringify({
+            response_type: "code",
+            client_id: process.env.SPOTIFY_CLIENT_ID,
+            scope,
+            redirect_uri: redirectUri,
+            state,
+            show_dialog: true,
+          }),
+      });
+    }
+  );
 };
 
 export const getAccessToken = (req, res) => {
@@ -83,13 +91,44 @@ export const getAccessToken = (req, res) => {
       .then((result) => {
         const date = new Date();
         const hourInSeconds = 60 * 60 * 1000;
+        const { access_token: accessToken, refresh_token: refreshToken } =
+          result.data;
+        console.log(accessToken);
         date.setTime(date.getTime() + hourInSeconds);
-        res.cookie("spotify_access_token", result.data.access_token);
-        res.cookie("spotify_refresh_token", result.data.refresh_token);
+        db.query(queries.getUserIdBySpotifyState, [state], (err, result) => {
+          if (err) throw err;
+          const { id: userId } = result.rows[0];
+          getSpotifyId(accessToken).then((spotifyId) => {
+            db.query(queries.updateSpotifyIDByUserId, [spotifyId, userId]);
+            db.query(queries.updateSpotifyStateByUserId, [null, userId]);
+          });
+        });
+        res.cookie("spotify_access_token", accessToken);
+        res.cookie("spotify_refresh_token", refreshToken);
         res.cookie("spotify_token_expiration_date", date);
-        res.redirect("http://localhost:5173");
+        res.redirect("http://localhost:5173/home");
       });
   }
+};
+
+const getSpotifyId = async (accessToken) => {
+  const SPOTIFY_CURRENT_USER_ENDPOINT = "https://api.spotify.com/v1/me";
+  return axios
+    .get(SPOTIFY_CURRENT_USER_ENDPOINT, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
+    .then((res) => {
+      return res.data.id;
+    });
+};
+
+const updateSpotifyIdByUserId = async (userId, spotifyId) => {
+  db.query(updateSpotifyIdByUserId, [spotifyId, userId], (err, result) => {
+    if (err) throw err;
+    console.log(result);
+  });
 };
 
 const createUser = async (id, username, email) => {
