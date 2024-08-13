@@ -88,7 +88,7 @@ const Game = () => {
   };
 
   useEffect(() => {
-    if (findCookieByKey("access_token") === null) {
+    if (findCookieByKey("spotify_access_token") === null) {
       navigate("/", { replace: true });
     } else {
       if (localStorage.getItem("songs")) {
