@@ -10,3 +10,13 @@ export const db = new pg.Pool({
   password: process.env.DB_PASSWORD,
   port: parseInt(process.env.DB_PORT),
 });
+
+export const commitTransaction = async (db, query, parameters) => {
+  try {
+    await db.query("COMMIT");
+    const result = await db.query(query, parameters);
+    return result.rows;
+  } catch (e) {
+    await db.query("ROLLBACK");
+  }
+};

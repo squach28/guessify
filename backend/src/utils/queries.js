@@ -10,4 +10,8 @@ export const queries = {
   updateSpotifyStateByUserId:
     "UPDATE auth SET spotify_state = $1 WHERE id = $2",
   getUserIdBySpotifyState: "SELECT id FROM auth WHERE spotify_state = $1",
+  createGame: `WITH new_game AS (INSERT INTO games (user_id, date) VALUES ($1, $2) ON CONFLICT DO NOTHING RETURNING id) 
+  SELECT COALESCE((SELECT id FROM new_game), (SELECT id FROM games WHERE user_id = $1 AND date = $2)) AS id`,
+  insertAnswer:
+    "INSERT INTO answers (id, game_id, name, artists, rank) VALUES ($1, $2, $3, $4, $5)",
 };

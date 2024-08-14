@@ -4,8 +4,10 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export const tokenMiddleware = async (req, res, next) => {
-  const { token_expiration_date: expirationDate, refresh_token: refreshToken } =
-    req.cookies;
+  const {
+    spotify_token_expiration_date: expirationDate,
+    spotify_refresh_token: refreshToken,
+  } = req.cookies;
   const SPOTIFY_REFRESH_TOKEN_URL = "https://accounts.spotify.com/api/token";
   const today = new Date();
   const expireDate = new Date(expirationDate);
