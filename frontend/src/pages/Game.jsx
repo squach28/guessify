@@ -3,7 +3,7 @@ import axios from "axios";
 import SongList from "../components/SongList";
 import GuessesList from "../components/GuessesList";
 import { findCookieByKey } from "../util";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { v4 as uuidv4 } from "uuid";
 
@@ -21,6 +21,27 @@ const Game = () => {
   const [selected, setSelected] = useState(false);
   const [swap, setSwap] = useState(null);
   const navigate = useNavigate();
+  const { search } = useLocation();
+  const query = new URLSearchParams(search);
+  const gameId = query.get("id");
+
+  useEffect(() => {
+    if (findCookieByKey("spotify_access_token") === null) {
+      navigate("/", { replace: true });
+    }
+    fetchSongs().then((result) => setSongs(result));
+  }, []);
+
+  const fetchSongs = async () => {
+    return axios
+      .get(
+        `${import.meta.env.VITE_API_URL}/answers/${gameId}?shuffled=${true}`,
+        {
+          withCredentials: true,
+        }
+      )
+      .then((res) => res.data);
+  };
 
   const decrementIndex = () => {
     setSelected(false);
@@ -53,12 +74,10 @@ const Game = () => {
       newGuesses[answerIndex].value = currentSong;
       setGuesses(() => {
         setSelected(null);
-        localStorage.setItem("guesses", JSON.stringify(newGuesses));
         return newGuesses;
       });
       const newSongs = songs.filter((song) => song.id !== currentSong.id);
       setSongs(newSongs);
-      localStorage.setItem("songs", JSON.stringify(newSongs));
     } else {
       if (value) {
         if (swap) {
@@ -77,7 +96,6 @@ const Game = () => {
           newGuesses[swapIndex].value = currValue;
           setGuesses(() => {
             setSwap(null);
-            localStorage.setItem("guesses", JSON.stringify(newGuesses));
             return newGuesses;
           });
         } else {
@@ -86,31 +104,6 @@ const Game = () => {
       }
     }
   };
-
-  useEffect(() => {
-    if (findCookieByKey("spotify_access_token") === null) {
-      navigate("/", { replace: true });
-    } else {
-      if (localStorage.getItem("songs")) {
-        const topSongs = JSON.parse(localStorage.getItem("songs"));
-        setSongs(topSongs);
-      } else {
-        axios
-          .get(`${import.meta.env.VITE_API_URL}/songs/top?shuffled=true`, {
-            withCredentials: true,
-          })
-          .then((res) => {
-            const topSongs = res.data;
-            localStorage.setItem("songs", JSON.stringify(topSongs));
-            setSongs(topSongs);
-          });
-      }
-    }
-    if (localStorage.getItem("guesses")) {
-      const prevGuesses = localStorage.getItem("guesses");
-      setGuesses(JSON.parse(prevGuesses));
-    }
-  }, []);
 
   const gradeAnswers = (e) => {
     axios
@@ -130,7 +123,6 @@ const Game = () => {
           }
         }
         setGuesses(() => {
-          localStorage.setItem("guesses", JSON.stringify(correctedAnswers));
           return correctedAnswers;
         });
       });

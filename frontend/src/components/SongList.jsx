@@ -3,14 +3,6 @@ import leftArrowIcon from "../assets/icons/arrow-left-solid.svg";
 import rightArrowIcon from "../assets/icons/arrow-right-solid.svg";
 
 const SongItem = ({ song, selected, toggleSelectSong }) => {
-  const getArtists = (song) => {
-    const artists = song.artists.map((artist) => {
-      return artist.name;
-    });
-
-    return artists.join(", ");
-  };
-
   return (
     <p
       className={` bg-black text-white p-2 rounded-md opacity-75 backdrop-blur-sm cursor-pointer select-none ${
@@ -18,7 +10,7 @@ const SongItem = ({ song, selected, toggleSelectSong }) => {
       }`}
       onClick={(e) => toggleSelectSong(e, song)}
     >
-      {song.name} - {getArtists(song)}
+      {song.name} - {song.artists}
     </p>
   );
 };
