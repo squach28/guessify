@@ -8,7 +8,6 @@ export const getAnswers = (req, res) => {
     res.status(400).json({ message: "Missing id in params" });
     return;
   }
-  console.log(id);
   db.query(queries.getAnswersByGameId, [id], (err, result) => {
     if (err) throw err;
     const rows = result.rows;

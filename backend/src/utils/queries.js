@@ -17,4 +17,8 @@ export const queries = {
   getGamesForCurerntUser:
     "SELECT g.id AS game_id, g.user_id, g.date, u.email, u.username, u.spotify_id FROM games AS g JOIN users AS u ON g.user_id = u.id WHERE g.user_id = $1",
   getAnswersByGameId: "SELECT * FROM answers WHERE game_id = $1",
+  getSessionByGameIdAndUserId:
+    "SELECT id FROM sessions WHERE game_id = $1 AND user_id = $2",
+  createSession:
+    "INSERT INTO sessions (game_id, user_id) VALUES ($1, $2) RETURNING id",
 };

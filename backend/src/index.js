@@ -6,6 +6,7 @@ import { songsRouter } from "./routes/songsRoutes.js";
 import { usersRouter } from "./routes/usersRoutes.js";
 import { gamesRouter } from "./routes/gamesRoutes.js";
 import { answersRouter } from "./routes/answersRoutes.js";
+import { sessionsRouter } from "./routes/sessionsRoutes.js";
 
 const PORT = process.env.PORT || 3000;
 const corsOptions = {
@@ -23,6 +24,7 @@ app.use("/songs", songsRouter);
 app.use("/users", usersRouter);
 app.use("/games", gamesRouter);
 app.use("/answers", answersRouter);
+app.use("/sessions", sessionsRouter);
 
 app.get("/", (req, res) => {
   res.status(200).send("hello");

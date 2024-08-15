@@ -93,7 +93,6 @@ export const getAccessToken = (req, res) => {
         const hourInSeconds = 60 * 60 * 1000;
         const { access_token: accessToken, refresh_token: refreshToken } =
           result.data;
-        console.log(accessToken);
         date.setTime(date.getTime() + hourInSeconds);
         db.query(queries.getUserIdBySpotifyState, [state], (err, result) => {
           if (err) throw err;
