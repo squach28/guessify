@@ -32,10 +32,12 @@ export const createGame = (req, res) => {
       const date = new Date();
       date.setMonth(date.getMonth() - 1);
       date.setDate(1);
-      commitTransaction(db, queries.createGame, [userId, date]).then((rows) => {
-        const { id } = rows[0];
-        uploadAnswers(db, id, answers);
-      });
+      commitTransaction(db, queries.createGame, [userId, date]).then(
+        (dbResult) => {
+          const { id } = dbResult.rows[0];
+          uploadAnswers(db, id, answers);
+        }
+      );
       res.status(200).json(result.data);
     });
 };
