@@ -1,13 +1,6 @@
 import React from "react";
 
 const GuessItem = ({ guess, placeGuess, swap, selected, index }) => {
-  const getArtists = (artists) => {
-    const res = artists.map((artist) => {
-      return artist.name;
-    });
-
-    return res.join(", ");
-  };
   return (
     <li
       key={guess.id}
@@ -31,9 +24,7 @@ const GuessItem = ({ guess, placeGuess, swap, selected, index }) => {
   `}
       onClick={(e) => placeGuess(e, guess)}
     >
-      {guess.value
-        ? `${guess.value.name} - ${getArtists(guess.value.artists)}`
-        : ""}
+      {guess.value ? `${guess.value.name} - ${guess.value.artists}` : ""}
     </li>
   );
 };
