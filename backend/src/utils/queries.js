@@ -14,5 +14,6 @@ export const queries = {
   SELECT COALESCE((SELECT id FROM new_game), (SELECT id FROM games WHERE user_id = $1 AND date = $2)) AS id`,
   insertAnswer:
     "INSERT INTO answers (id, game_id, name, artists, rank) VALUES ($1, $2, $3, $4, $5)",
-  getGamesForCurerntUser: "SELECT * FROM games WHERE user_id = $1",
+  getGamesForCurerntUser:
+    "SELECT g.id AS game_id, g.user_id, g.date, u.email, u.username, u.spotify_id FROM games AS g JOIN users AS u ON g.user_id = u.id WHERE g.user_id = $1",
 };

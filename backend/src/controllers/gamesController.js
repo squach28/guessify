@@ -42,7 +42,6 @@ export const createGame = (req, res) => {
 
 export const getGamesForCurrentUser = (req, res) => {
   const userId = req.userId;
-  console.log(userId);
   if (userId === undefined) {
     res.status(400).json({ message: "Missing userId parameter" });
   } else {
