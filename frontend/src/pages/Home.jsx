@@ -10,8 +10,10 @@ const Home = () => {
 
   useEffect(() => {
     isConnectedWithSpotify().then((res) => {
-      createGame().then((result) => result);
-      setConnected(res.connected);
+      if (res.connected) {
+        createGame().then((result) => result);
+        setConnected(res.connected);
+      }
     });
   }, []);
 
@@ -20,7 +22,10 @@ const Home = () => {
       .get(`${import.meta.env.VITE_API_URL}/auth/spotify/connected`, {
         withCredentials: true,
       })
-      .then((res) => res.data);
+      .then((res) => {
+        console.log(res.data);
+        return res.data;
+      });
   };
 
   const createGame = async () => {

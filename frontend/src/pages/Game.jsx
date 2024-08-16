@@ -17,7 +17,6 @@ const Game = () => {
         return { id: uuidv4(), value: null, correct: null };
       })
   );
-
   const [selected, setSelected] = useState(false);
   const [swap, setSwap] = useState(null);
   const navigate = useNavigate();
@@ -30,7 +29,34 @@ const Game = () => {
       navigate("/", { replace: true });
     }
     fetchSongs().then((result) => setSongs(result));
+    getSession(gameId)
+      .then((result) => console.log(result))
+      .catch((e) => {
+        if (e.response.status === 404) {
+          createSession(gameId);
+        }
+      });
   }, []);
+
+  const getSession = async (gameId) => {
+    return axios
+      .get(`${import.meta.env.VITE_API_URL}/sessions/${gameId}`, {
+        withCredentials: true,
+      })
+      .then((res) => res.data);
+  };
+
+  const createSession = async (gameId) => {
+    return axios
+      .post(
+        `${import.meta.env.VITE_API_URL}/sessions`,
+        {
+          gameId,
+        },
+        { withCredentials: true }
+      )
+      .then((res) => res.data);
+  };
 
   const fetchSongs = async () => {
     return axios
