@@ -21,4 +21,6 @@ export const queries = {
     "SELECT id FROM sessions WHERE game_id = $1 AND user_id = $2",
   createSession:
     "INSERT INTO sessions (game_id, user_id) VALUES ($1, $2) RETURNING id",
+  updateSpotifyRefreshTokenByUserId:
+    "UPDATE auth SET spotify_refresh_token = $1 WHERE id = $2",
 };

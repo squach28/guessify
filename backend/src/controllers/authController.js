@@ -2,7 +2,7 @@ import querystring from "node:querystring";
 import axios from "axios";
 import { generateRandomString } from "../utils/util.js";
 import dotenv from "dotenv";
-import { db } from "../utils/db.js";
+import { commitTransaction, db } from "../utils/db.js";
 import { queries } from "../utils/queries.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -19,6 +19,7 @@ export const connectedWithSpotify = (req, res) => {
     if (result.rowCount === 0) {
       res.status(404).json({ message: `User doesn't exist` });
     }
+    console.log(result.rows);
     const { spotify_id: spotifyId } = result.rows[0];
     if (spotifyId === null) {
       res.status(200).json({ connected: false });
@@ -56,7 +57,7 @@ export const spotifyLogin = (req, res) => {
   );
 };
 
-export const getAccessToken = (req, res) => {
+export const getAccessToken = async (req, res) => {
   const { code, state } = req.query;
 
   if (state == null) {
@@ -98,8 +99,18 @@ export const getAccessToken = (req, res) => {
           if (err) throw err;
           const { id: userId } = result.rows[0];
           getSpotifyId(accessToken).then((spotifyId) => {
-            db.query(queries.updateSpotifyIDByUserId, [spotifyId, userId]);
-            db.query(queries.updateSpotifyStateByUserId, [null, userId]);
+            commitTransaction(db, queries.updateSpotifyIDByUserId, [
+              spotifyId,
+              userId,
+            ]);
+            commitTransaction(db, queries.updateSpotifyStateByUserId, [
+              null,
+              userId,
+            ]);
+            commitTransaction(db, queries.updateSpotifyRefreshTokenByUserId, [
+              refreshToken,
+              userId,
+            ]);
           });
         });
         res.cookie("spotify_access_token", accessToken);
@@ -155,9 +166,6 @@ export const signUp = (req, res) => {
         const accessToken = jwt.sign({ id, username }, process.env.JWT_SECRET, {
           expiresIn: "1 day",
         });
-        res.cookie("user_id", id, {
-          httpOnly: true,
-        });
         res.cookie("access_token", accessToken, {
           httpOnly: true,
         });
@@ -196,7 +204,9 @@ export const logIn = (req, res) => {
         res.cookie("access_token", accessToken, {
           httpOnly: true,
         });
-        res.status(200).json({ message: "Sucess" });
+        const refreshToken = result.rows[0].refreshToken;
+        getAccessTokenWithRefreshToken(refreshToken);
+        res.status(200).json({ message: "Success" });
         return;
       } else {
         res
@@ -206,6 +216,30 @@ export const logIn = (req, res) => {
       }
     });
   });
+};
+
+const getAccessTokenWithRefreshToken = async (refreshToken) => {
+  return axios
+    .post(
+      SPOTIFY_REFRESH_TOKEN_URL,
+      {
+        grant_type: "refresh_token",
+        refresh_token: refreshToken,
+      },
+      {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          Authorization:
+            "Basic " +
+            new Buffer.from(
+              process.env.SPOTIFY_CLIENT_ID +
+                ":" +
+                process.env.SPOTIFY_CLIENT_SECRET
+            ).toString("base64"),
+        },
+      }
+    )
+    .then((res) => console.log(res.data));
 };
 
 export const logOut = (req, res) => {
