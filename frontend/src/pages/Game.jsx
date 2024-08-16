@@ -6,6 +6,8 @@ import { findCookieByKey } from "../util";
 import { useLocation, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { v4 as uuidv4 } from "uuid";
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import { db } from "../utils/firebase";
 
 const Game = () => {
   const [songs, setSongs] = useState([]);
@@ -17,6 +19,7 @@ const Game = () => {
         return { id: uuidv4(), value: null, correct: null };
       })
   );
+  const [sessionId, setSessionId] = useState(null);
   const [selected, setSelected] = useState(false);
   const [swap, setSwap] = useState(null);
   const navigate = useNavigate();
@@ -30,7 +33,14 @@ const Game = () => {
     }
     fetchSongs().then((result) => setSongs(result));
     getSession(gameId)
-      .then((result) => console.log(result))
+      .then((result) => {
+        setSessionId(result.sessionId);
+        const docRef = doc(db, "sessions", result.sessionId);
+        getDoc(docRef).then((doc) => {
+          const docGuesses = doc.data().guesses;
+          setGuesses(docGuesses);
+        });
+      })
       .catch((e) => {
         if (e.response.status === 404) {
           createSession(gameId);
@@ -52,6 +62,7 @@ const Game = () => {
         `${import.meta.env.VITE_API_URL}/sessions`,
         {
           gameId,
+          guesses,
         },
         { withCredentials: true }
       )
@@ -100,6 +111,9 @@ const Game = () => {
       newGuesses[answerIndex].value = currentSong;
       setGuesses(() => {
         setSelected(null);
+        setDoc(doc(db, "sessions", sessionId), {
+          guesses: newGuesses,
+        });
         return newGuesses;
       });
       const newSongs = songs.filter((song) => song.id !== currentSong.id);

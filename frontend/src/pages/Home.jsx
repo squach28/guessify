@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import axios from "axios";
-import { Link } from "react-router-dom";
 import GamesList from "../components/GamesList";
 
 const Home = () => {
   const [connected, setConnected] = useState(false);
-  const [games, setGames] = useState([]);
 
   useEffect(() => {
     isConnectedWithSpotify().then((res) => {
@@ -23,7 +21,6 @@ const Home = () => {
         withCredentials: true,
       })
       .then((res) => {
-        console.log(res.data);
         return res.data;
       });
   };
