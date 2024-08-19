@@ -20,8 +20,8 @@ export const getTopSongs = (req, res) => {
     accessToken = req.newAccessToken;
     expirationDate = req.newExpirationDate;
   } else {
-    accessToken = req.cookies["access_token"];
-    expirationDate = req.cookies["token_expiration_date"];
+    accessToken = req.cookies["spotify_access_token"];
+    expirationDate = req.cookies["spotify_token_expiration_date"];
   }
   if (accessToken === undefined) {
     res.status(403).send("Missing access token");

@@ -19,7 +19,6 @@ export const connectedWithSpotify = (req, res) => {
     if (result.rowCount === 0) {
       res.status(404).json({ message: `User doesn't exist` });
     }
-    console.log(result.rows);
     const { spotify_id: spotifyId } = result.rows[0];
     if (spotifyId === null) {
       res.status(200).json({ connected: false });
@@ -112,11 +111,10 @@ export const getAccessToken = async (req, res) => {
               userId,
             ]);
           });
+          res.cookie("spotify_access_token", accessToken);
+          res.cookie("spotify_token_expiration_date", date);
+          res.redirect("http://localhost:5173/home");
         });
-        res.cookie("spotify_access_token", accessToken);
-        res.cookie("spotify_refresh_token", refreshToken);
-        res.cookie("spotify_token_expiration_date", date);
-        res.redirect("http://localhost:5173/home");
       });
   }
 };
@@ -204,10 +202,25 @@ export const logIn = (req, res) => {
         res.cookie("access_token", accessToken, {
           httpOnly: true,
         });
-        const refreshToken = result.rows[0].refreshToken;
-        getAccessTokenWithRefreshToken(refreshToken);
-        res.status(200).json({ message: "Success" });
-        return;
+        const spotifyRefreshToken = result.rows[0].spotify_refresh_token;
+        getAccessTokenWithRefreshToken(spotifyRefreshToken)
+          .then((result) => {
+            const spotifyAccessToken = result.data.access_token;
+
+            const date = new Date();
+            const hourInSeconds = 60 * 60 * 1000;
+            date.setTime(date.getTime() + hourInSeconds);
+
+            res.cookie("spotify_access_token", spotifyAccessToken);
+            res.cookie("spotify_token_expiration_date", date);
+            res.status(200).json({ message: "Success" });
+            return;
+          })
+          .catch((e) =>
+            console.log(
+              "Something went wrong with trying to get access token from refresh token :("
+            )
+          );
       } else {
         res
           .status(400)
@@ -219,30 +232,30 @@ export const logIn = (req, res) => {
 };
 
 const getAccessTokenWithRefreshToken = async (refreshToken) => {
-  return axios
-    .post(
-      SPOTIFY_REFRESH_TOKEN_URL,
-      {
-        grant_type: "refresh_token",
-        refresh_token: refreshToken,
+  const SPOTIFY_REFRESH_TOKEN_URL = "https://accounts.spotify.com/api/token";
+  return axios.post(
+    SPOTIFY_REFRESH_TOKEN_URL,
+    {
+      grant_type: "refresh_token",
+      refresh_token: refreshToken,
+    },
+    {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        Authorization:
+          "Basic " +
+          new Buffer.from(
+            process.env.SPOTIFY_CLIENT_ID +
+              ":" +
+              process.env.SPOTIFY_CLIENT_SECRET
+          ).toString("base64"),
       },
-      {
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          Authorization:
-            "Basic " +
-            new Buffer.from(
-              process.env.SPOTIFY_CLIENT_ID +
-                ":" +
-                process.env.SPOTIFY_CLIENT_SECRET
-            ).toString("base64"),
-        },
-      }
-    )
-    .then((res) => console.log(res.data));
+    }
+  );
 };
 
 export const logOut = (req, res) => {
   res.clearCookie("access_token");
+  res.clearCookie("spotify_access_token");
   res.status(200).json({ message: "Successfully logged out" });
 };

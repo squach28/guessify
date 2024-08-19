@@ -26,11 +26,12 @@ export const getSessionByGameId = (req, res) => {
 
 export const createSession = (req, res) => {
   const userId = req.userId;
-  const { gameId } = req.body;
+  const { gameId, guesses } = req.body;
   if (userId === undefined) {
     res.status(400).json({ message: "Missing userId" });
     return;
   }
+
   db.query(queries.createSession, [gameId, userId], (err, result) => {
     if (err) throw err;
     const { id } = result.rows[0];
@@ -39,6 +40,7 @@ export const createSession = (req, res) => {
       .set({
         user_id: userId,
         game_id: gameId,
+        guesses,
       })
       .then(() => {
         res.status(201).json({ id });

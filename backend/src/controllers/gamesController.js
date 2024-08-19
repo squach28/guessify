@@ -69,5 +69,5 @@ const uploadAnswers = async (db, gameId, answers) => {
       answer.rank,
     ]);
   });
-  return Promise.all(promises).then((res) => console.log(res));
+  return Promise.all(promises);
 };
