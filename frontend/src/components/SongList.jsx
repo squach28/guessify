@@ -3,6 +3,7 @@ import leftArrowIcon from "../assets/icons/arrow-left-solid.svg";
 import rightArrowIcon from "../assets/icons/arrow-right-solid.svg";
 
 const SongItem = ({ song, selected, toggleSelectSong }) => {
+  console.log(song);
   return (
     <p
       className={` bg-black text-white p-2 rounded-md opacity-75 backdrop-blur-sm cursor-pointer select-none ${
