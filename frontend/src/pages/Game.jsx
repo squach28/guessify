@@ -31,7 +31,8 @@ const Game = () => {
     if (findCookieByKey("spotify_access_token") === null) {
       navigate("/", { replace: true });
     }
-    getSession(gameId)
+    const date = new Date();
+    getSession(gameId, date)
       .then((result) => {
         console.log(result);
         setSessionId(result.sessionId);
@@ -66,9 +67,7 @@ const Game = () => {
       });
   }, []);
 
-  console.log(game.options);
-
-  const getSession = async (gameId) => {
+  const getSession = async (gameId, date) => {
     return axios
       .get(`${import.meta.env.VITE_API_URL}/sessions/${gameId}`, {
         withCredentials: true,
@@ -140,9 +139,15 @@ const Game = () => {
       const newSongs = game.options.filter(
         (song) => song.id !== currentSong.id
       );
-      setGame({
-        ...game,
-        options: newSongs,
+      setGame(() => {
+        const docRef = doc(db, "sessions", sessionId);
+        updateDoc(docRef, {
+          options: newSongs,
+        });
+        return {
+          ...game,
+          options: newSongs,
+        };
       });
     } else {
       if (value) {
