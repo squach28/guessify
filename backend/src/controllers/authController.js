@@ -113,6 +113,7 @@ export const getAccessToken = async (req, res) => {
           });
           res.cookie("spotify_access_token", accessToken);
           res.cookie("spotify_token_expiration_date", date);
+          res.cookie("spotify_refresh_token", refreshToken);
           res.redirect("http://localhost:5173/home");
         });
       });
@@ -213,6 +214,7 @@ export const logIn = (req, res) => {
 
             res.cookie("spotify_access_token", spotifyAccessToken);
             res.cookie("spotify_token_expiration_date", date);
+            res.cookie("spotify_refresh_token", spotifyRefreshToken);
             res.status(200).json({ message: "Success" });
             return;
           })
@@ -232,6 +234,7 @@ export const logIn = (req, res) => {
 };
 
 const getAccessTokenWithRefreshToken = async (refreshToken) => {
+  console.log(refreshToken);
   const SPOTIFY_REFRESH_TOKEN_URL = "https://accounts.spotify.com/api/token";
   return axios.post(
     SPOTIFY_REFRESH_TOKEN_URL,

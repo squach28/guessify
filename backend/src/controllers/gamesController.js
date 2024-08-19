@@ -47,7 +47,7 @@ export const getGamesForCurrentUser = (req, res) => {
   if (userId === undefined) {
     res.status(400).json({ message: "Missing userId parameter" });
   } else {
-    db.query(queries.getGamesForCurerntUser, [userId], (err, result) => {
+    db.query(queries.getGamesForCurrentUser, [userId], (err, result) => {
       if (err) throw err;
       res.status(200).json(result.rows);
     });
