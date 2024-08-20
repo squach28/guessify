@@ -186,15 +186,38 @@ const Game = () => {
   };
 
   const gradeAnswers = (e) => {
-    axios
+    const correctedGuesses = game.guesses;
+    fetchAnswers().then((answers) => {
+      answers.forEach((answer) => {
+        const { rank, id } = answer;
+        const index = rank - 1;
+        const guess = correctedGuesses[index]; // rank starts at 1, guesses starts at 0
+        if (guess.id !== id) {
+          guess.correct = false;
+        } else {
+          guess.correct = true;
+        }
+      });
+      setGame(() => {
+        const docRef = doc(db, "sessions", sessionId);
+        updateDoc(docRef, {
+          guesses: correctedGuesses,
+        });
+        return {
+          ...game,
+          guesses: correctedGuesses,
+        };
+      });
+    });
+  };
+
+  const fetchAnswers = async () => {
+    return axios
       .get(`${import.meta.env.VITE_API_URL}/answers/${gameId}`, {
         withCredentials: true,
       })
-      .then((res) => {
-        console.log(res.data);
-      });
+      .then((res) => res.data);
   };
-
   return (
     <div className="w-full min-h-screen flex flex-col gap-2">
       <Navbar />

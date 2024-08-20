@@ -7,6 +7,12 @@ const SongItem = ({ song, selected, toggleSelectSong }) => {
     <p
       className={` bg-black text-white p-2 rounded-md opacity-75 backdrop-blur-sm cursor-pointer select-none ${
         selected ? "border-green-500 border-4" : ""
+      } ${
+        song.correct !== null
+          ? song.correct
+            ? "border-green-500"
+            : "border-red-500"
+          : ""
       }`}
       onClick={(e) => toggleSelectSong(e, song)}
     >
