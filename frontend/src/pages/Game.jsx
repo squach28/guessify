@@ -92,7 +92,9 @@ const Game = () => {
   const fetchSongs = async () => {
     return axios
       .get(
-        `${import.meta.env.VITE_API_URL}/answers/${gameId}?shuffled=${true}`,
+        `${
+          import.meta.env.VITE_API_URL
+        }/answers/${gameId}?shuffled=${true}&withoutRanks=${true}`,
         {
           withCredentials: true,
         }

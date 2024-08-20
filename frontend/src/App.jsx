@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-import { findCookieByKey } from "./util";
 import Navbar from "./components/Navbar";
 
 const App = () => {
   const navigate = useNavigate();
   useEffect(() => {
-    const accessToken = findCookieByKey("access_token");
-    if (accessToken) {
-      navigate("/game", { replace: true });
-    }
+    getCurrentUser()
+      .then((user) => {
+        if (user.id) {
+          navigate("/home", { replace: true });
+        }
+      })
+      .catch();
   }, []);
 
   const handleAuthorize = () => {
@@ -18,6 +20,14 @@ const App = () => {
       const { url } = res.data;
       window.location.href = url;
     });
+  };
+
+  const getCurrentUser = async () => {
+    return axios
+      .get(`${import.meta.env.VITE_API_URL}/users/user/me`, {
+        withCredentials: true,
+      })
+      .then((res) => res.data);
   };
   return (
     <div className="w-full flex flex-col min-h-screen bg-slate-100">
