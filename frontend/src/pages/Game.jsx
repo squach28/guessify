@@ -169,6 +169,10 @@ const Game = () => {
           newGuesses[swapIndex].value = currValue;
           setGame(() => {
             setSwap(null);
+            const docRef = doc(db, "sessions", sessionId);
+            updateDoc(docRef, {
+              guesses: newGuesses,
+            });
             return {
               ...game,
               guesses: newGuesses,
