@@ -6,7 +6,7 @@ import { findCookieByKey } from "../util";
 import { useLocation, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { v4 as uuidv4 } from "uuid";
-import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../utils/firebase";
 
 const Game = () => {
@@ -34,7 +34,6 @@ const Game = () => {
     const date = new Date();
     getSession(gameId, date)
       .then((result) => {
-        console.log(result);
         setSessionId(result.sessionId);
         const docRef = doc(db, "sessions", result.sessionId);
         getDoc(docRef).then((doc) => {
@@ -51,6 +50,7 @@ const Game = () => {
         if (e.response.status === 404) {
           fetchSongs().then((songs) => {
             createSession(gameId, game.guesses, songs).then((result) => {
+              setSessionId(result.id);
               const docRef = doc(db, "sessions", result.id);
               getDoc(docRef).then((doc) => {
                 const docGuesses = doc.data().guesses;
@@ -67,7 +67,7 @@ const Game = () => {
       });
   }, []);
 
-  const getSession = async (gameId, date) => {
+  const getSession = async (gameId) => {
     return axios
       .get(`${import.meta.env.VITE_API_URL}/sessions/${gameId}`, {
         withCredentials: true,
@@ -187,25 +187,11 @@ const Game = () => {
 
   const gradeAnswers = (e) => {
     axios
-      .get(`${import.meta.env.VITE_API_URL}/songs/top`, {
+      .get(`${import.meta.env.VITE_API_URL}/answers/${gameId}`, {
         withCredentials: true,
       })
       .then((res) => {
-        const correctAnswers = res.data;
-        const correctedAnswers = game.guesses;
-        for (let i = 0; i < correctAnswers.length; i++) {
-          const answer = correctAnswers[i];
-          const guess = game.guessesguesses[i];
-          if (answer.id !== guess.value.id) {
-            correctedAnswers[i].correct = false;
-          } else {
-            correctedAnswers[i].correct = true;
-          }
-        }
-        setGame({
-          ...game,
-          guesses: correctedAnswers,
-        });
+        console.log(res.data);
       });
   };
 

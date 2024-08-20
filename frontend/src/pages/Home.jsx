@@ -26,10 +26,13 @@ const Home = () => {
   };
 
   const createGame = async () => {
+    const date = new Date();
     return axios
       .post(
         `${import.meta.env.VITE_API_URL}/games`,
-        {},
+        {
+          date,
+        },
         {
           withCredentials: true,
         }
