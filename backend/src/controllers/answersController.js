@@ -3,10 +3,23 @@ import { queries } from "../utils/queries.js";
 
 export const getAnswers = (req, res) => {
   const { id } = req.params;
-  const { shuffled } = req.query;
+  const { shuffled, withoutRanks } = req.query;
   if (id === undefined) {
     res.status(400).json({ message: "Missing id in params" });
     return;
+  }
+
+  if (withoutRanks !== undefined) {
+    db.query(queries.getAnswersByGameIdWithoutRanks, [id], (err, result) => {
+      if (err) throw err;
+      const rows = result.rows;
+      if (shuffled) {
+        shuffleRanks(rows);
+      }
+      res.status(200).json(rows);
+    });
+    return;
+  } else {
   }
   db.query(queries.getAnswersByGameId, [id], (err, result) => {
     if (err) throw err;
