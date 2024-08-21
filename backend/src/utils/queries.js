@@ -23,6 +23,8 @@ export const queries = {
     "SELECT id, name, artists, game_id FROM answers WHERE game_id = $1",
   getSessionByGameIdAndUserId:
     "SELECT id FROM sessions WHERE game_id = $1 AND user_id = $2",
+  getSessionByDateAndUserId:
+    "SELECT s.id FROM sessions AS s JOIN games AS g ON s.game_id = g.id WHERE g.date = $1 AND s.user_id = $2",
   createSession:
     "INSERT INTO sessions (game_id, user_id) VALUES ($1, $2) ON CONFLICT DO NOTHING RETURNING id",
   updateSpotifyRefreshTokenByUserId:
