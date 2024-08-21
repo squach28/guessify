@@ -22,17 +22,12 @@ const Game = () => {
   const [sessionId, setSessionId] = useState(null);
   const [selected, setSelected] = useState(false);
   const [swap, setSwap] = useState(null);
-  const navigate = useNavigate();
   const { search } = useLocation();
   const query = new URLSearchParams(search);
   const gameId = query.get("id");
 
   useEffect(() => {
-    if (findCookieByKey("spotify_access_token") === null) {
-      navigate("/", { replace: true });
-    }
-    const date = new Date();
-    getSession(gameId, date)
+    getSession(gameId)
       .then((result) => {
         setSessionId(result.sessionId);
         const docRef = doc(db, "sessions", result.sessionId);
@@ -143,13 +138,25 @@ const Game = () => {
       );
       setGame(() => {
         const docRef = doc(db, "sessions", sessionId);
-        updateDoc(docRef, {
-          options: newSongs,
-        });
-        return {
-          ...game,
-          options: newSongs,
-        };
+        if (game.options.length === 1) {
+          updateDoc(docRef, {
+            options: newSongs,
+            status: "READY_TO_SUBMIT",
+          });
+          return {
+            ...game,
+            options: newSongs,
+            status: "READY_TO_SUBMIT",
+          };
+        } else {
+          updateDoc(docRef, {
+            options: newSongs,
+          });
+          return {
+            ...game,
+            options: newSongs,
+          };
+        }
       });
     } else {
       if (value) {
@@ -202,10 +209,12 @@ const Game = () => {
         const docRef = doc(db, "sessions", sessionId);
         updateDoc(docRef, {
           guesses: correctedGuesses,
+          status: "COMPLETE",
         });
         return {
           ...game,
           guesses: correctedGuesses,
+          status: "COMPLETE",
         };
       });
     });
