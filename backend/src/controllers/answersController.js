@@ -20,16 +20,16 @@ export const getAnswers = (req, res) => {
     });
     return;
   } else {
-  }
-  db.query(queries.getAnswersByGameId, [id], (err, result) => {
-    if (err) throw err;
-    const rows = result.rows;
-    if (shuffled) {
-      shuffleRanks(rows);
-    }
+    db.query(queries.getAnswersByGameId, [id], (err, result) => {
+      if (err) throw err;
+      const rows = result.rows;
+      if (shuffled) {
+        shuffleRanks(rows);
+      }
 
-    res.status(200).json(rows);
-  });
+      res.status(200).json(rows);
+    });
+  }
 };
 
 const shuffleRanks = (array) => {

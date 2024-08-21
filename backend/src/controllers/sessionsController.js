@@ -42,6 +42,7 @@ export const createSession = (req, res) => {
         game_id: gameId,
         options,
         guesses,
+        status: "IN_PROGRESS",
       })
       .then(() => {
         res.status(201).json({ id });

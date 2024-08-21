@@ -7,6 +7,7 @@ const SPOTIFY_TOP_SONGS_URL =
 
 export const createGame = (req, res) => {
   const userId = req.userId;
+  const { date } = req.body;
   let accessToken = "";
   if (req.newAccessToken) {
     accessToken = req.newAccessToken;
@@ -14,32 +15,46 @@ export const createGame = (req, res) => {
     const { spotify_access_token: spotifyAccessToken } = req.cookies;
     accessToken = spotifyAccessToken;
   }
-  axios
-    .get(SPOTIFY_TOP_SONGS_URL, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    })
-    .then((result) => {
-      const answers = result.data.items.map((item, index) => {
-        return {
-          id: item.id,
-          name: item.name,
-          artists: item.artists,
-          rank: index + 1,
-        };
-      });
-      const date = new Date();
-      date.setMonth(date.getMonth() - 1);
-      date.setDate(1);
-      commitTransaction(db, queries.createGame, [userId, date]).then(
-        (dbResult) => {
-          const { id } = dbResult.rows[0];
-          uploadAnswers(db, id, answers);
-        }
-      );
-      res.status(200).json(result.data);
-    });
+  db.query(
+    queries.getGameForCurrentUserByDate,
+    [userId, date],
+    (err, result) => {
+      if (err) throw err;
+
+      if (result.rowCount > 0) {
+        res.status(200).json({ message: "Game already exists" });
+        return;
+      } else {
+        axios
+          .get(SPOTIFY_TOP_SONGS_URL, {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          })
+          .then((result) => {
+            const answers = result.data.items.map((item, index) => {
+              return {
+                id: item.id,
+                name: item.name,
+                artists: item.artists,
+                rank: index + 1,
+              };
+            });
+            const date = new Date();
+            date.setMonth(date.getMonth() - 1);
+            date.setDate(1);
+            commitTransaction(db, queries.createGame, [userId, date]).then(
+              (dbResult) => {
+                const { id } = dbResult.rows[0];
+                uploadAnswers(db, id, answers);
+              }
+            );
+            res.status(201).json(result.data);
+            return;
+          });
+      }
+    }
+  );
 };
 
 export const getGamesForCurrentUser = (req, res) => {
