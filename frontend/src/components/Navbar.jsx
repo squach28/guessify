@@ -1,19 +1,14 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useFetch } from "../hooks/useFetch";
 
 const Navbar = ({ hideAuth }) => {
   const [user, setUser] = useState(null);
+  const { data, isLoading, error } = useFetch(
+    `${import.meta.env.VITE_API_URL}/users/user/me`
+  );
   const navigate = useNavigate();
-
-  useEffect(() => {
-    axios
-      .get(`${import.meta.env.VITE_API_URL}/users/user/me`, {
-        withCredentials: true,
-      })
-      .then((res) => setUser(res.data))
-      .catch((e) => setUser(null));
-  }, []);
 
   const handleLogout = () => {
     axios
@@ -28,14 +23,15 @@ const Navbar = ({ hideAuth }) => {
         navigate("/");
       });
   };
+
+  console.log(data);
   return (
     <ul className="flex justify-between p-4 bg-black text-white">
       <li>
-        <Link to={`${user ? "/home" : "/"}`}>Guessify</Link>
+        <Link to={`${data ? "/home" : "/"}`}>Guessify</Link>
       </li>
-      {hideAuth ? null : user ? (
-        <p onClick={handleLogout}>{user.username}</p>
-      ) : (
+      {isLoading ? <p>Loading...</p> : null}
+      {error ? (
         <div className="flex items-center gap-4">
           <li>
             <Link to="/signup">Sign Up</Link>
@@ -44,7 +40,8 @@ const Navbar = ({ hideAuth }) => {
             <Link to="/login">Log in</Link>
           </li>
         </div>
-      )}
+      ) : null}
+      {data ? <p>{data.username}</p> : null}
     </ul>
   );
 };
