@@ -120,6 +120,9 @@ const Game = () => {
   };
 
   const placeGuess = (e, value = null) => {
+    if (game.status === "COMPLETE") {
+      return;
+    }
     if (game.options.length > 0) {
       if (!selected) {
         return;
