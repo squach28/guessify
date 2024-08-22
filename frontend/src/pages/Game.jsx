@@ -19,7 +19,7 @@ const Game = () => {
     status: null,
   });
   const [index, setIndex] = useState(0);
-  const [sessionId, setSessionId] = useState(null);
+  const [session, setSession] = useState(null);
   const [selected, setSelected] = useState(false);
   const [swap, setSwap] = useState(null);
   const { search } = useLocation();
@@ -29,8 +29,8 @@ const Game = () => {
   useEffect(() => {
     getSessionByGameId(gameId)
       .then((result) => {
-        setSessionId(result.sessionId);
         const docRef = doc(db, "sessions", result.sessionId);
+        setSession(docRef);
         getDoc(docRef).then((doc) => {
           const docGuesses = doc.data().guesses;
           const docOptions = doc.data().options;
@@ -47,8 +47,8 @@ const Game = () => {
         if (e.response.status === 404) {
           fetchSongs().then((songs) => {
             createSession(gameId, game.guesses, songs).then((result) => {
-              setSessionId(result.id);
               const docRef = doc(db, "sessions", result.id);
+              setSession(docRef);
               getDoc(docRef).then((doc) => {
                 const docGuesses = doc.data().guesses;
                 const docOptions = doc.data().options;
@@ -133,7 +133,7 @@ const Game = () => {
       newGuesses[answerIndex].value = currentSong;
       setGame(() => {
         setSelected(null);
-        updateDoc(doc(db, "sessions", sessionId), {
+        updateDoc(session, {
           guesses: newGuesses,
         });
         return { ...game, guesses: newGuesses };
@@ -142,9 +142,8 @@ const Game = () => {
         (song) => song.id !== currentSong.id
       );
       setGame(() => {
-        const docRef = doc(db, "sessions", sessionId);
         if (game.options.length === 1) {
-          updateDoc(docRef, {
+          updateDoc(session, {
             options: newSongs,
             status: "READY_TO_SUBMIT",
           });
@@ -154,7 +153,7 @@ const Game = () => {
             status: "READY_TO_SUBMIT",
           };
         } else {
-          updateDoc(docRef, {
+          updateDoc(session, {
             options: newSongs,
           });
           return {
@@ -181,8 +180,7 @@ const Game = () => {
           newGuesses[swapIndex].value = currValue;
           setGame(() => {
             setSwap(null);
-            const docRef = doc(db, "sessions", sessionId);
-            updateDoc(docRef, {
+            updateDoc(session, {
               guesses: newGuesses,
             });
             return {
@@ -211,8 +209,7 @@ const Game = () => {
         }
       });
       setGame(() => {
-        const docRef = doc(db, "sessions", sessionId);
-        updateDoc(docRef, {
+        updateDoc(session, {
           guesses: correctedGuesses,
           status: "COMPLETE",
         });

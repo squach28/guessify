@@ -1,15 +1,23 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useFetch } from "../hooks/useFetch";
 
-const Navbar = ({ hideAuth }) => {
-  const [user, setUser] = useState(null);
+const Menu = () => {
+  return (
+    <ul className="w-[75px] flex flex-col gap-1 bg-gray-400 text-white absolute right-0 p-2 rounded-md mt-1">
+      <li>Profile</li>
+      <li>Log out</li>
+    </ul>
+  );
+};
+
+const Navbar = () => {
   const { data, isLoading, error } = useFetch(
     `${import.meta.env.VITE_API_URL}/users/user/me`
   );
+  const [showMenu, setShowMenu] = useState(false);
   const navigate = useNavigate();
-
   const handleLogout = () => {
     axios
       .post(
@@ -40,7 +48,17 @@ const Navbar = ({ hideAuth }) => {
           </li>
         </div>
       ) : null}
-      {data ? <p onClick={handleLogout}>{data.username}</p> : null}
+      {data ? (
+        <div className="relative">
+          <p
+            className="hover:cursor-pointer"
+            onClick={() => setShowMenu((prev) => !prev)}
+          >
+            {data.username}
+          </p>
+          {showMenu ? <Menu /> : null}
+        </div>
+      ) : null}
     </ul>
   );
 };
