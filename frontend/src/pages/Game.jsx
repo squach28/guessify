@@ -2,8 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import SongList from "../components/SongList";
 import GuessesList from "../components/GuessesList";
-import { findCookieByKey } from "../util";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { v4 as uuidv4 } from "uuid";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
@@ -27,7 +26,7 @@ const Game = () => {
   const gameId = query.get("id");
 
   useEffect(() => {
-    getSession(gameId)
+    getSessionByGameId(gameId)
       .then((result) => {
         setSessionId(result.sessionId);
         const docRef = doc(db, "sessions", result.sessionId);
@@ -62,9 +61,9 @@ const Game = () => {
       });
   }, []);
 
-  const getSession = async (gameId) => {
+  const getSessionByGameId = async () => {
     return axios
-      .get(`${import.meta.env.VITE_API_URL}/sessions/${gameId}`, {
+      .get(`${import.meta.env.VITE_API_URL}/sessions?gameId=${gameId}`, {
         withCredentials: true,
       })
       .then((res) => res.data);
