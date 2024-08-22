@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useFetch } from "../hooks/useFetch";
 const GameItem = ({ game }) => {
   const date = new Date(game.date);
   const navigate = useNavigate();
@@ -36,28 +37,21 @@ const GameItem = ({ game }) => {
 };
 
 const GamesList = () => {
-  const [games, setGames] = useState([]);
-  // TODO: fetch the current user's games that they haven't played
-  // this should be the game of the month
-  useEffect(() => {
-    fetchGamesForCurrentUser().then((result) => {
-      setGames(result);
-    });
-  }, []);
-
-  const fetchGamesForCurrentUser = async () => {
-    return axios
-      .get(`${import.meta.env.VITE_API_URL}/games/me`, {
-        withCredentials: true,
-      })
-      .then((res) => res.data);
-  };
+  const { data, isLoading, error } = useFetch(
+    `${import.meta.env.VITE_API_URL}/games/me`
+  );
   return (
-    <ul>
-      {games.map((game) => (
-        <GameItem key={game.game_id} game={game} />
-      ))}
-    </ul>
+    <>
+      {isLoading ? <p>Loading...</p> : null}
+      {error ? <p>Something happened, please try again later.</p> : null}
+      {data ? (
+        <ul>
+          {data.map((game) => (
+            <GameItem key={game.game_id} game={game} />
+          ))}
+        </ul>
+      ) : null}
+    </>
   );
 };
 
