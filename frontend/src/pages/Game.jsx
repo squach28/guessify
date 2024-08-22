@@ -16,6 +16,7 @@ const Game = () => {
       .map(() => {
         return { id: uuidv4(), value: null, correct: null };
       }),
+    status: null,
   });
   const [index, setIndex] = useState(0);
   const [sessionId, setSessionId] = useState(null);
@@ -33,10 +34,12 @@ const Game = () => {
         getDoc(docRef).then((doc) => {
           const docGuesses = doc.data().guesses;
           const docOptions = doc.data().options;
+          const docStatus = doc.data().status;
           setGame({
             ...game,
             guesses: docGuesses,
             options: docOptions,
+            status: docStatus,
           });
         });
       })
@@ -226,6 +229,51 @@ const Game = () => {
       })
       .then((res) => res.data);
   };
+
+  const renderBasedOnGameStatus = () => {
+    switch (game.status) {
+      case "IN_PROGRESS":
+        return (
+          <SongList
+            song={game.options[index]}
+            incrementIndex={incrementIndex}
+            decrementIndex={decrementIndex}
+            toggleSelectSong={toggleSelectSong}
+            selected={selected}
+          />
+        );
+      case "READY_TO_SUBMIT":
+        return (
+          <button
+            className="bg-black text-white p-1 w-1/2 md:max-w-lg mx-auto rounded-md mt-4"
+            onClick={gradeAnswers}
+          >
+            Submit
+          </button>
+        );
+      case "COMPLETE":
+        const correctGuesses = game.guesses.reduce((acc, guess) => {
+          if (guess.correct) {
+            return acc + 1;
+          } else {
+            return acc;
+          }
+        }, 0);
+        return (
+          <div className="flex flex-col items-center mx-auto pb-4">
+            <p className="text-3xl font-bold">Score</p>
+            <div className="flex gap-1 text-lg">
+              <span>{correctGuesses}</span>
+              <span>/</span>
+              <span>{game.guesses.length}</span>
+            </div>
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className="w-full min-h-screen flex flex-col gap-2">
       <Navbar />
@@ -236,22 +284,8 @@ const Game = () => {
         selected={selected}
         swap={swap}
       />
-      {game.options.length > 0 ? (
-        <SongList
-          song={game.options[index]}
-          incrementIndex={incrementIndex}
-          decrementIndex={decrementIndex}
-          toggleSelectSong={toggleSelectSong}
-          selected={selected}
-        />
-      ) : (
-        <button
-          className="bg-black text-white p-1 w-1/2 md:max-w-lg mx-auto rounded-md mt-4"
-          onClick={gradeAnswers}
-        >
-          Submit
-        </button>
-      )}
+
+      {renderBasedOnGameStatus()}
     </div>
   );
 };
