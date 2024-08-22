@@ -5,10 +5,15 @@ import GamesList from "../components/GamesList";
 import { useFetch } from "../hooks/useFetch";
 
 const Home = () => {
-  const [connected, setConnected] = useState(false);
   const { data, isLoading, error } = useFetch(
     `${import.meta.env.VITE_API_URL}/auth/spotify/connected`
   );
+
+  useEffect(() => {
+    if (data) {
+      createGame();
+    }
+  }, [data]);
 
   const createGame = async () => {
     const date = new Date();
