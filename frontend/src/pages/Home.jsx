@@ -44,7 +44,7 @@ const Home = () => {
       {data ? (
         data.connected ? (
           <div className="flex flex-col gap-2 p-4">
-            <h1 className="text-3xl font-bold">Games</h1>
+            <h1 className="text-3xl">Games</h1>
             <GamesList />
           </div>
         ) : (
