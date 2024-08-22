@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useFetch } from "../hooks/useFetch";
+
 const GameItem = ({ game }) => {
   const date = new Date(game.date);
   const navigate = useNavigate();
@@ -45,7 +45,7 @@ const GamesList = () => {
       {isLoading ? <p>Loading...</p> : null}
       {error ? <p>Something happened, please try again later.</p> : null}
       {data ? (
-        <ul>
+        <ul className="">
           {data.map((game) => (
             <GameItem key={game.game_id} game={game} />
           ))}

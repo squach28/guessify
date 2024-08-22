@@ -24,11 +24,10 @@ const Navbar = ({ hideAuth }) => {
       });
   };
 
-  console.log(data);
   return (
     <ul className="flex justify-between p-4 bg-black text-white">
       <li>
-        <Link to={`${data ? "/home" : "/"}`}>Guessify</Link>
+        <Link to={`${data ? "/home" : "/"}`}>guessify</Link>
       </li>
       {isLoading ? <p>Loading...</p> : null}
       {error ? (
@@ -41,7 +40,7 @@ const Navbar = ({ hideAuth }) => {
           </li>
         </div>
       ) : null}
-      {data ? <p>{data.username}</p> : null}
+      {data ? <p onClick={handleLogout}>{data.username}</p> : null}
     </ul>
   );
 };
