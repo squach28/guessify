@@ -221,6 +221,10 @@ export const logIn = (req, res) => {
           httpOnly: true,
         });
         const spotifyRefreshToken = result.rows[0].spotify_refresh_token;
+        if (spotifyRefreshToken === null) {
+          res.status(200).json({ message: "Success" });
+          return;
+        }
         getAccessTokenWithRefreshToken(spotifyRefreshToken)
           .then((result) => {
             const spotifyAccessToken = result.data.access_token;
@@ -276,6 +280,8 @@ const getAccessTokenWithRefreshToken = async (refreshToken) => {
 
 export const logOut = (req, res) => {
   res.clearCookie("access_token");
+  res.clearCookie("spotify_refresh_token");
+  res.clearCookie("spotify_token_expiration_date");
   res.clearCookie("spotify_access_token");
   res.status(200).json({ message: "Successfully logged out" });
 };
