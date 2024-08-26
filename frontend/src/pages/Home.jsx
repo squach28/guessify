@@ -10,7 +10,7 @@ const Home = () => {
   );
 
   useEffect(() => {
-    if (data) {
+    if (data && data.connected) {
       createGame();
     }
   }, [data]);
