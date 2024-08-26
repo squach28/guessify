@@ -6,6 +6,8 @@ import { commitTransaction, db } from "../utils/db.js";
 import { queries } from "../utils/queries.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { storage } from "../utils/firebase.js";
+import { getDownloadURL } from "firebase-admin/storage";
 
 dotenv.config();
 
@@ -141,8 +143,17 @@ const updateSpotifyIdByUserId = async (userId, spotifyId) => {
 };
 
 const createUser = async (id, username, email) => {
-  return db.query(queries.createUser, [id, username, email], (err, result) => {
-    if (err) throw err;
+  const file = storage.file("default_image_url.jpg");
+  return getDownloadURL(file).then((imageUrl) => {
+    console.log(imageUrl);
+    db.query(
+      queries.createUser,
+      [id, username, email, imageUrl],
+      (err, result) => {
+        if (err) throw err;
+        console.log(result);
+      }
+    );
   });
 };
 
@@ -161,15 +172,21 @@ export const signUp = (req, res) => {
       db.query(queries.signup, [email, username, hash], (err, result) => {
         if (err) throw err;
         const { id } = result.rows[0];
-        createUser(id, username, email);
-        const accessToken = jwt.sign({ id, username }, process.env.JWT_SECRET, {
-          expiresIn: "1 day",
+        console.log(id);
+        createUser(id, username, email).then(() => {
+          const accessToken = jwt.sign(
+            { id, username },
+            process.env.JWT_SECRET,
+            {
+              expiresIn: "1 day",
+            }
+          );
+          res.cookie("access_token", accessToken, {
+            httpOnly: true,
+          });
+          res.status(201).json({ id });
+          return;
         });
-        res.cookie("access_token", accessToken, {
-          httpOnly: true,
-        });
-        res.status(201).json({ id });
-        return;
       });
     });
   });

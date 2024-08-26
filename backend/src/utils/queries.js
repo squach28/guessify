@@ -5,7 +5,8 @@ export const queries = {
   getUserByUsernameAuth: "SELECT * FROM auth WHERE username = $1",
   getUserById: "SELECT * FROM users WHERE id = $1",
   getUserByEmail: "SELECT * FROM users WHERE email = $1",
-  createUser: "INSERT INTO users (id, username, email) VALUES ($1, $2, $3)",
+  createUser:
+    "INSERT INTO users (id, username, email, image_url) VALUES ($1, $2, $3, $4)",
   updateSpotifyIDByUserId: "UPDATE users SET spotify_id = $1 WHERE id = $2",
   updateSpotifyStateByUserId:
     "UPDATE auth SET spotify_state = $1 WHERE id = $2",
