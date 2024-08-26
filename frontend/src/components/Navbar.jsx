@@ -3,11 +3,35 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useFetch } from "../hooks/useFetch";
 
-const Menu = () => {
+const Menu = ({ handleLogout }) => {
+  const navigate = useNavigate();
+
+  const fetchCurrentUser = async () => {
+    return axios
+      .get(`${import.meta.env.VITE_API_URL}/users/user/me`, {
+        withCredentials: true,
+      })
+      .then((res) => res.data);
+  };
+
+  const handleProfileClick = () => {
+    fetchCurrentUser()
+      .then((user) => {
+        navigate(`/profile/${user.id}`);
+      })
+      .catch((e) => navigate("/", { replace: true }));
+  };
   return (
-    <ul className="w-[75px] flex flex-col gap-1 bg-gray-400 text-white absolute right-0 p-2 rounded-md mt-1">
-      <li>Profile</li>
-      <li>Log out</li>
+    <ul className="w-[75px] flex flex-col gap-1 bg-gray-800 shadow-md text-white absolute top-10 right-0 p-2 rounded-md mt-1">
+      <li
+        className="select-none hover:cursor-pointer"
+        onClick={handleProfileClick}
+      >
+        Profile
+      </li>
+      <li className="select-none hover:cursor-pointer" onClick={handleLogout}>
+        Log out
+      </li>
     </ul>
   );
 };
@@ -56,7 +80,7 @@ const Navbar = () => {
           >
             {data.username}
           </p>
-          {showMenu ? <Menu /> : null}
+          {showMenu ? <Menu handleLogout={handleLogout} /> : null}
         </div>
       ) : null}
     </ul>

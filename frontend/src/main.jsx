@@ -7,6 +7,7 @@ import Game from "./pages/Game.jsx";
 import Login from "./pages/Login.jsx";
 import Home from "./pages/Home.jsx";
 import Signup from "./pages/Signup.jsx";
+import Profile from "./pages/Profile.jsx";
 
 const router = createBrowserRouter([
   {
@@ -28,6 +29,10 @@ const router = createBrowserRouter([
   {
     path: "/login",
     element: <Login />,
+  },
+  {
+    path: "/profile/:id",
+    element: <Profile />,
   },
 ]);
 
