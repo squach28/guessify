@@ -9,4 +9,4 @@ export const usersRouter = express.Router();
 
 usersRouter.get("/:id", getUserById);
 usersRouter.get("/", getUser);
-usersRouter.get("/:user/me", jwtAuthMiddleware, getCurrentUser);
+usersRouter.get("/user/me", jwtAuthMiddleware, getCurrentUser);
