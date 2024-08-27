@@ -53,12 +53,18 @@ const Home = () => {
             <GamesList />
           </div>
         ) : (
-          <button
-            className="bg-green-400 text-white p-2 mx-auto"
-            onClick={handleConnectAccount}
-          >
-            Connect your Spotify account
-          </button>
+          <div className="flex flex-col items-center mt-10 gap-2">
+            <h1 className="text-xl font-bold text-center">
+              Spotify Account Not Connected
+            </h1>
+            <p>Connect your Spotify account to get started!</p>
+            <button
+              className="bg-green-500 font-bold text-white p-2 mx-auto rounded-md shadow-md"
+              onClick={handleConnectAccount}
+            >
+              Connect your Spotify account
+            </button>
+          </div>
         )
       ) : null}
     </div>
