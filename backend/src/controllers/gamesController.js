@@ -20,7 +20,6 @@ export const createGame = (req, res) => {
     [userId, date],
     (err, result) => {
       if (err) throw err;
-
       if (result.rowCount > 0) {
         res.status(200).json({ message: "Game already exists" });
         return;

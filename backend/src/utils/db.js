@@ -17,6 +17,7 @@ export const commitTransaction = async (db, query, parameters) => {
     const result = await db.query(query, parameters);
     return result;
   } catch (e) {
+    console.log(e);
     await db.query("ROLLBACK");
   }
 };
