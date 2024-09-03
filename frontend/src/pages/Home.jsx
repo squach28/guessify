@@ -9,27 +9,6 @@ const Home = () => {
     `${import.meta.env.VITE_API_URL}/auth/spotify/connected`
   );
 
-  useEffect(() => {
-    if (data && data.connected) {
-      createGame();
-    }
-  }, [data]);
-
-  const createGame = async () => {
-    const date = new Date();
-    return axios
-      .post(
-        `${import.meta.env.VITE_API_URL}/games`,
-        {
-          date,
-        },
-        {
-          withCredentials: true,
-        }
-      )
-      .then((res) => res.data);
-  };
-
   const handleConnectAccount = () => {
     axios
       .get(`${import.meta.env.VITE_API_URL}/auth/spotify/login`, {
@@ -50,7 +29,7 @@ const Home = () => {
         data.connected ? (
           <div className="flex flex-col gap-2 p-4">
             <h1 className="text-3xl">Games</h1>
-            <GamesList />
+            <GamesList connected={data.connected} />
           </div>
         ) : (
           <div className="flex flex-col items-center mt-10 gap-2">

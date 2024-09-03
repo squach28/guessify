@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useFetch } from "../hooks/useFetch";
+import axios from "axios";
 
 const GameItem = ({ game }) => {
   const date = new Date(game.date);
@@ -36,17 +37,48 @@ const GameItem = ({ game }) => {
   );
 };
 
-const GamesList = () => {
-  const { data, isLoading, error } = useFetch(
-    `${import.meta.env.VITE_API_URL}/games/me`
-  );
+const GamesList = ({ connected }) => {
+  const [games, setGames] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (connected) {
+      createGame().then(() => {
+        fetchGames().then((res) => {
+          setIsLoading(false);
+          setGames(res.data);
+        });
+      });
+    }
+  }, []);
+
+  const createGame = async () => {
+    const date = new Date();
+    return axios
+      .post(
+        `${import.meta.env.VITE_API_URL}/games`,
+        {
+          date,
+        },
+        {
+          withCredentials: true,
+        }
+      )
+      .then((res) => res.data);
+  };
+
+  const fetchGames = () => {
+    return axios.get(`${import.meta.env.VITE_API_URL}/games/me`, {
+      withCredentials: true,
+    });
+  };
+
   return (
     <>
       {isLoading ? <p>Loading...</p> : null}
-      {error ? <p>Something happened, please try again later.</p> : null}
-      {data ? (
+      {games ? (
         <ul className="">
-          {data.map((game) => (
+          {games.map((game) => (
             <GameItem key={game.game_id} game={game} />
           ))}
         </ul>
