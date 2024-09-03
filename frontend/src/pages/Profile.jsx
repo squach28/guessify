@@ -1,30 +1,53 @@
 import React, { useEffect } from "react";
 import Navbar from "../components/Navbar";
-import { useParams } from "react-router-dom";
 import { useFetch } from "../hooks/useFetch";
+import penIcon from "../assets/icons/user-pen-solid.svg";
+import axios from "axios";
 
 const Profile = () => {
-  const { id } = useParams();
   const { data, isLoading, error } = useFetch(
     `${import.meta.env.VITE_API_URL}/users/user/me`
   );
 
-  console.log(data);
+  const uploadImage = (e) => {
+    const file = e.target.files[0];
+    const formData = new FormData();
+    formData.append("file", file);
+    axios.put(
+      `${import.meta.env.VITE_API_URL}/users/profilePicture`,
+      formData,
+      { withCredentials: true }
+    );
+  };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-gray-100">
       <Navbar />
       <div className="h-full flex flex-col items-center mt-8">
         {isLoading ? <p>Loading...</p> : null}
         {data ? (
           <div className="h-full flex flex-col gap-4">
-            <img
-              width={100}
-              height={100}
-              className="mx-auto"
-              src={data.imageUrl}
-              alt="profile picture"
-            />
+            <div className="relative overflow-hidden">
+              <img
+                width={150}
+                height={150}
+                className="mx-auto rounded-full w-[150px]"
+                src={data.imageUrl}
+                alt="profile picture"
+              />
+              <div className="absolute right-[100px] bottom-0 border-black bg-white rounded-full p-2">
+                <label htmlFor="avatar">
+                  <img width={20} height={20} src={penIcon} />
+                </label>
+                <input
+                  id="avatar"
+                  className="hidden"
+                  type="file"
+                  accept="image/png, image/jpeg"
+                  onChange={uploadImage}
+                />
+              </div>
+            </div>
             <div>
               <span className="font-bold">Username: </span>
               <span>{data.username}</span>
