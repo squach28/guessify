@@ -7,6 +7,7 @@ import { usersRouter } from "./routes/usersRoutes.js";
 import { gamesRouter } from "./routes/gamesRoutes.js";
 import { answersRouter } from "./routes/answersRoutes.js";
 import { sessionsRouter } from "./routes/sessionsRoutes.js";
+import bodyParser from "body-parser";
 
 const PORT = process.env.PORT || 3000;
 const corsOptions = {
@@ -19,6 +20,7 @@ const app = express();
 app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/auth", authRouter);
 app.use("/songs", songsRouter);
 app.use("/users", usersRouter);

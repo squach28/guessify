@@ -32,10 +32,22 @@ export const getCurrentUser = (req, res) => {
     if (result.rowCount === 0) {
       res.status(404).json({ message: "User not found" });
     } else {
-      const { id, username, email } = result.rows[0];
-      res.status(200).json({ id, username, email });
+      const {
+        id,
+        username,
+        email,
+        image_url: imageUrl,
+        spotify_id: spotifyId,
+      } = result.rows[0];
+      res.status(200).json({ id, username, email, imageUrl, spotifyId });
     }
   });
+};
+
+export const updateProfilePicture = (req, res) => {
+  const body = req.body;
+  console.log(req.file);
+  res.status(201).json({ message: "success" });
 };
 
 export const getUserById = (req, res) => {};
