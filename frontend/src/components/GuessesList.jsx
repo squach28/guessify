@@ -29,12 +29,12 @@ const GuessItem = ({ guess, placeGuess, swap, selected, index }) => {
   );
 };
 
-const GuessesList = ({ guesses, selected, placeGuess, swap }) => {
+const GuessesList = ({ game, selected, placeGuess, swap }) => {
   return (
     <ol
       className={`w-full list-decimal list-inside flex flex-col justify-between gap-6`}
     >
-      {guesses.map((guess, index) => (
+      {game.guesses.map((guess, index) => (
         <GuessItem
           key={guess.id}
           guess={guess}

@@ -52,10 +52,12 @@ const Game = () => {
               getDoc(docRef).then((doc) => {
                 const docGuesses = doc.data().guesses;
                 const docOptions = doc.data().options;
+                const docStatus = doc.data().status;
                 setGame({
                   ...game,
                   guesses: docGuesses,
                   options: docOptions,
+                  status: docStatus,
                 });
               });
             });
@@ -278,8 +280,7 @@ const Game = () => {
     <div className="w-full min-h-screen flex flex-col gap-2">
       <Navbar />
       <GuessesList
-        currentSong={game.options[index]}
-        guesses={game.guesses}
+        game={game}
         placeGuess={placeGuess}
         selected={selected}
         swap={swap}
