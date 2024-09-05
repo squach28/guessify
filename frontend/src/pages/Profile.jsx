@@ -27,7 +27,7 @@ const Profile = () => {
         {isLoading ? <p>Loading...</p> : null}
         {data ? (
           <div className="h-full flex flex-col gap-4">
-            <div className="relative overflow-hidden">
+            <div className="relative">
               <img
                 width={150}
                 height={150}
@@ -35,7 +35,7 @@ const Profile = () => {
                 src={data.imageUrl}
                 alt="profile picture"
               />
-              <div className="absolute right-[100px] bottom-0 border-black bg-white rounded-full p-2">
+              <div className="absolute right-[100px] bottom-[-10px] border-black bg-white rounded-full p-2">
                 <label htmlFor="avatar">
                   <img width={20} height={20} src={penIcon} />
                 </label>
