@@ -25,6 +25,8 @@ const Game = () => {
   const { search } = useLocation();
   const query = new URLSearchParams(search);
   const gameId = query.get("id");
+  const date = new Date(query.get("date"));
+  date.setDate(date.getDate() + 1);
 
   useEffect(() => {
     getSessionByGameId(gameId)
@@ -279,6 +281,12 @@ const Game = () => {
   return (
     <div className="w-full min-h-screen flex flex-col gap-2">
       <Navbar />
+      <p className="mx-auto font-bold text-2xl py-4">
+        {date.toLocaleDateString("en-US", {
+          month: "long",
+          year: "numeric",
+        })}
+      </p>
       <GuessesList
         game={game}
         placeGuess={placeGuess}
