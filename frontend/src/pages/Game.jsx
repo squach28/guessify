@@ -249,7 +249,7 @@ const Game = () => {
       case "READY_TO_SUBMIT":
         return (
           <button
-            className="bg-black text-white p-1 w-1/2 md:max-w-lg mx-auto rounded-md mt-4"
+            className="bg-black text-white p-1 w-1/2 md:max-w-lg mx-auto rounded-md my-4"
             onClick={gradeAnswers}
           >
             Submit
@@ -271,6 +271,9 @@ const Game = () => {
               <span>/</span>
               <span>{game.guesses.length}</span>
             </div>
+            <button className="bg-black text-white px-4 py-2 my-2 rounded-md">
+              See Correct Answers
+            </button>
           </div>
         );
       default:

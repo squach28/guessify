@@ -77,7 +77,7 @@ const GamesList = ({ connected }) => {
     <>
       {isLoading ? <p>Loading...</p> : null}
       {games ? (
-        <ul className="">
+        <ul className="flex flex-col gap-2">
           {games.map((game) => (
             <GameItem key={game.game_id} game={game} />
           ))}
