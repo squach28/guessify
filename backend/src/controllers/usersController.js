@@ -1,5 +1,9 @@
 import { queries } from "../utils/queries.js";
 import { db } from "../utils/db.js";
+import fs from "node:fs";
+import { storage } from "../utils/firebase.js";
+import { getDownloadURL } from "firebase-admin/storage";
+
 export const getUser = (req, res) => {
   const { username, email } = req.query;
   if (username) {
@@ -45,8 +49,37 @@ export const getCurrentUser = (req, res) => {
 };
 
 export const updateProfilePicture = (req, res) => {
-  const body = req.body;
-  console.log(req.file);
+  const file = req.file;
+  const userId = req.userId;
+  const fileName = file.originalname;
+  const split = fileName.split(".");
+  const fileType = split[split.length - 1];
+  const filePath = file.path;
+  // TODO: getDownloadURL from new avatar image and update db
+  fs.readFile(filePath, (err, data) => {
+    if (err) throw err;
+    const destination = `${userId}/avatar.${fileType}`;
+    const options = {
+      destination,
+    };
+    storage.upload(file.path, options, (err, file) => {
+      if (err) throw err;
+      const avatar = storage.file(destination);
+      getDownloadURL(avatar).then((imageUrl) => {
+        db.query(
+          queries.updateImageUrlByUserId,
+          [imageUrl, userId],
+          (err, result) => {
+            if (err) throw err;
+            console.log(result);
+          }
+        );
+      });
+      fs.rm(filePath, (err) => {
+        if (err) throw err;
+      });
+    });
+  });
   res.status(201).json({ message: "success" });
 };
 

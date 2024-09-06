@@ -145,7 +145,6 @@ const updateSpotifyIdByUserId = async (userId, spotifyId) => {
 const createUser = async (id, username, email) => {
   const file = storage.file("default_image_url.jpg");
   return getDownloadURL(file).then((imageUrl) => {
-    console.log(imageUrl);
     db.query(
       queries.createUser,
       [id, username, email, imageUrl],

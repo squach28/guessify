@@ -30,4 +30,5 @@ export const queries = {
     "INSERT INTO sessions (game_id, user_id) VALUES ($1, $2) ON CONFLICT DO NOTHING RETURNING id",
   updateSpotifyRefreshTokenByUserId:
     "UPDATE auth SET spotify_refresh_token = $1 WHERE id = $2",
+  updateImageUrlByUserId: "UPDATE users SET image_url = $1 WHERE id = $2",
 };
