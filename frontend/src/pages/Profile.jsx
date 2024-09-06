@@ -12,11 +12,16 @@ const Profile = () => {
   const uploadImage = (e) => {
     const file = e.target.files[0];
     const formData = new FormData();
-    formData.append("file", file);
+    formData.append("avatar", file);
     axios.put(
       `${import.meta.env.VITE_API_URL}/users/profilePicture`,
       formData,
-      { withCredentials: true }
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        withCredentials: true,
+      }
     );
   };
 
@@ -31,12 +36,12 @@ const Profile = () => {
               <img
                 width={150}
                 height={150}
-                className="mx-auto rounded-full w-[150px]"
+                className="mx-auto rounded-full w-[150px] h-[150px]"
                 src={data.imageUrl}
                 alt="profile picture"
               />
-              <div className="absolute right-[100px] bottom-[-10px] border-black bg-white rounded-full p-2">
-                <label htmlFor="avatar">
+              <div className="absolute right-[80px] bottom-[-5px] border-black bg-white rounded-full p-2 hover:cursor-pointer">
+                <label className="hover:cursor-pointer" htmlFor="avatar">
                   <img width={20} height={20} src={penIcon} />
                 </label>
                 <input
@@ -44,6 +49,7 @@ const Profile = () => {
                   className="hidden"
                   type="file"
                   accept="image/png, image/jpeg"
+                  name="avatar"
                   onChange={uploadImage}
                 />
               </div>
