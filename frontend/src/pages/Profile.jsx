@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import { useFetch } from "../hooks/useFetch";
 import penIcon from "../assets/icons/user-pen-solid.svg";
@@ -8,21 +8,26 @@ const Profile = () => {
   const { data, isLoading, error } = useFetch(
     `${import.meta.env.VITE_API_URL}/users/user/me`
   );
+  const [loading, setLoading] = useState(false);
 
   const uploadImage = (e) => {
+    setLoading(true);
     const file = e.target.files[0];
+    if (file === undefined) {
+      return;
+    }
     const formData = new FormData();
     formData.append("avatar", file);
-    axios.put(
-      `${import.meta.env.VITE_API_URL}/users/profilePicture`,
-      formData,
-      {
+    axios
+      .put(`${import.meta.env.VITE_API_URL}/users/profilePicture`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
         withCredentials: true,
-      }
-    );
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   return (
@@ -36,7 +41,9 @@ const Profile = () => {
               <img
                 width={150}
                 height={150}
-                className="mx-auto rounded-full w-[150px] h-[150px]"
+                className={`mx-auto rounded-full w-[150px] h-[150px] ${
+                  loading ? "opacity-50" : "opacity-100"
+                }`}
                 src={data.imageUrl}
                 alt="profile picture"
               />
@@ -51,6 +58,7 @@ const Profile = () => {
                   accept="image/png, image/jpeg"
                   name="avatar"
                   onChange={uploadImage}
+                  disabled={loading}
                 />
               </div>
             </div>
