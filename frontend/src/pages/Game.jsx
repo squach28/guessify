@@ -141,12 +141,15 @@ const Game = () => {
           return currGuess;
         });
 
-        setGame({
+        const updatedGame = {
           ...game,
           options: newOptions,
           guesses: newGuesses,
           status: newOptions.length === 0 ? "READY_TO_SUBMIT" : "IN_PROGRESS",
-        });
+        };
+
+        setGame(updatedGame);
+        updateDoc(session, updatedGame);
       } else {
         // user selected a song and wants to swap
         if (selected) {
@@ -161,6 +164,7 @@ const Game = () => {
     }
   };
 
+  //
   const swapGuesses = (guess1, guess2) => {
     const newGuesses = game.guesses.map((guess) => {
       if (guess.id === guess1.id) {
@@ -180,12 +184,13 @@ const Game = () => {
       return guess;
     });
 
-    console.log(newGuesses);
-
-    setGame({
+    const updatedGame = {
       ...game,
       guesses: newGuesses,
-    });
+    };
+
+    setGame(updatedGame);
+    updateDoc(session, updatedGame);
   };
 
   const gradeAnswers = (e) => {
