@@ -1,5 +1,5 @@
 import { cert, initializeApp } from "firebase-admin/app";
-import serviceAccountKey from "./serviceAccountKey.json" with { type: "json" };
+import serviceAccountKey from "../../serviceAccountKey.json" with { type: "json" };
 import { getFirestore } from "firebase-admin/firestore";
 import { getStorage } from 'firebase-admin/storage'
 import dotenv from 'dotenv'
