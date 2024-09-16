@@ -12,7 +12,7 @@ import bodyParser from "body-parser";
 const PORT = process.env.PORT || 3000;
 const corsOptions = {
   credentials: true,
-  origin: "http://localhost:5173",
+  origin: process.env.CORS_ORIGIN,
 };
 
 const app = express();
