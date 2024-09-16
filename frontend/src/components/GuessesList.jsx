@@ -13,7 +13,6 @@ const GuessItem = ({ guess, placeGuess, swap, selected, index }) => {
           : ""
         : "border-black"
     }
-  ${swap && swap.id === guess.id ? "border-orange-500" : ""}
   ${
     guess.correct !== null
       ? guess.correct
@@ -29,7 +28,7 @@ const GuessItem = ({ guess, placeGuess, swap, selected, index }) => {
   );
 };
 
-const GuessesList = ({ game, selected, placeGuess, swap }) => {
+const GuessesList = ({ game, selected, placeGuess }) => {
   return (
     <ol
       className={`w-full list-decimal list-inside flex flex-col justify-between gap-6`}
@@ -39,7 +38,6 @@ const GuessesList = ({ game, selected, placeGuess, swap }) => {
           key={guess.id}
           guess={guess}
           placeGuess={placeGuess}
-          swap={swap}
           selected={selected}
           index={index}
         />

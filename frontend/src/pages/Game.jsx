@@ -21,7 +21,6 @@ const Game = () => {
   const [index, setIndex] = useState(0);
   const [session, setSession] = useState(null);
   const [selected, setSelected] = useState(null);
-  const [swap, setSwap] = useState(null);
   const { search } = useLocation();
   const query = new URLSearchParams(search);
   const gameId = query.get("id");
@@ -282,12 +281,7 @@ const Game = () => {
           year: "numeric",
         })}
       </p>
-      <GuessesList
-        game={game}
-        placeGuess={placeGuess}
-        selected={selected}
-        swap={swap}
-      />
+      <GuessesList game={game} placeGuess={placeGuess} selected={selected} />
 
       {renderBasedOnGameStatus()}
     </div>
