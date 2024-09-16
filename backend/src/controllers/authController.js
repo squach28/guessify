@@ -116,7 +116,7 @@ export const getAccessToken = async (req, res) => {
           res.cookie("spotify_access_token", accessToken);
           res.cookie("spotify_token_expiration_date", date);
           res.cookie("spotify_refresh_token", refreshToken);
-          res.redirect("http://localhost:5173/home");
+          res.redirect(`${process.env.CORS_ORIGIN}/home`);
         });
       });
   }
