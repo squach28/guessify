@@ -41,7 +41,7 @@ export const spotifyLogin = (req, res) => {
     (err, result) => {
       if (err) throw err;
       const scope = "user-top-read user-read-email";
-      const redirectUri = `http://localhost:3000/auth/accessToken`;
+      const redirectUri = `${process.env.REDIRECT_URI}/auth/accessToken`;
       res.json({
         url:
           "https://accounts.spotify.com/authorize?" +
