@@ -218,6 +218,8 @@ export const logIn = (req, res) => {
         });
         res.cookie("access_token", accessToken, {
           httpOnly: true,
+          sameSite: "none",
+          secure: true,
         });
         const spotifyRefreshToken = result.rows[0].spotify_refresh_token;
         if (spotifyRefreshToken === null) {
