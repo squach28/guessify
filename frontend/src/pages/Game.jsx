@@ -20,7 +20,7 @@ const Game = () => {
   });
   const [index, setIndex] = useState(0);
   const [session, setSession] = useState(null);
-  const [selected, setSelected] = useState(false);
+  const [selected, setSelected] = useState(null);
   const [swap, setSwap] = useState(null);
   const { search } = useLocation();
   const query = new URLSearchParams(search);
@@ -104,7 +104,6 @@ const Game = () => {
   };
 
   const decrementIndex = () => {
-    setSelected(false);
     setIndex((prev) => {
       if (prev - 1 < 0) {
         return game.options.length - 1;
@@ -115,88 +114,78 @@ const Game = () => {
   };
 
   const incrementIndex = () => {
-    setSelected(false);
     setIndex((prev) => (prev + 1) % game.options.length);
   };
 
-  const toggleSelectSong = (e) => {
-    setSelected((prev) => !prev);
-  };
-
-  const placeGuess = (e, value = null) => {
+  const placeGuess = (e, guess = null) => {
     if (game.status === "COMPLETE") {
+      // game is complete, don't allow user to interact with guesses
       return;
     }
+
     if (game.options.length > 0) {
-      if (!selected) {
-        return;
-      }
-      const newGuesses = game.guesses;
-      const answerIndex = e.target.id;
-      const currentSong = game.options[index];
-      newGuesses[answerIndex].value = currentSong;
-      setGame(() => {
-        setSelected(null);
-        updateDoc(session, {
-          guesses: newGuesses,
-        });
-        return { ...game, guesses: newGuesses };
-      });
-      const newSongs = game.options.filter(
-        (song) => song.id !== currentSong.id
-      );
-      setGame(() => {
-        if (game.options.length === 1) {
-          updateDoc(session, {
-            options: newSongs,
-            status: "READY_TO_SUBMIT",
-          });
-          return {
-            ...game,
-            options: newSongs,
-            status: "READY_TO_SUBMIT",
-          };
-        } else {
-          updateDoc(session, {
-            options: newSongs,
-          });
-          return {
-            ...game,
-            options: newSongs,
-          };
-        }
-      });
-    } else {
-      if (value) {
-        if (swap) {
-          if (swap.id === value.id) {
-            setSwap(null);
-            return;
-          }
-          const valueId = value.id;
-          const currValue = value.value;
-          const newGuesses = game.guesses;
-          const index = newGuesses.findIndex((guess) => guess.id === valueId);
-          newGuesses[index].value = swap.value;
-          const swapIndex = newGuesses.findIndex(
-            (guess) => guess.id === swap.id
-          );
-          newGuesses[swapIndex].value = currValue;
-          setGame(() => {
-            setSwap(null);
-            updateDoc(session, {
-              guesses: newGuesses,
-            });
+      // game is in progress, let user make a guess
+      if (selected === null && guess.value === null) {
+        // user hasn't previously selected a guess and current spot is empty
+        const currentSong = game.options[index];
+        const newOptions = game.options.filter(
+          (song) => song.id !== currentSong.id
+        );
+        const newGuesses = game.guesses.map((currGuess) => {
+          if (currGuess.id === guess.id) {
             return {
-              ...game,
-              guesses: newGuesses,
+              ...currGuess,
+              value: currentSong,
             };
-          });
+          }
+          return currGuess;
+        });
+
+        setGame({
+          ...game,
+          options: newOptions,
+          guesses: newGuesses,
+          status: newOptions.length === 0 ? "READY_TO_SUBMIT" : "IN_PROGRESS",
+        });
+      } else {
+        // user selected a song and wants to swap
+        if (selected) {
+          console.log(selected);
+          console.log(guess);
+          swapGuesses(selected, guess);
+          setSelected(null);
         } else {
-          setSwap(value);
+          setSelected(guess);
         }
       }
     }
+  };
+
+  const swapGuesses = (guess1, guess2) => {
+    const newGuesses = game.guesses.map((guess) => {
+      if (guess.id === guess1.id) {
+        return {
+          ...guess,
+          value: guess2.value,
+        };
+      }
+
+      if (guess.id === guess2.id) {
+        return {
+          ...guess,
+          value: guess1.value,
+        };
+      }
+
+      return guess;
+    });
+
+    console.log(newGuesses);
+
+    setGame({
+      ...game,
+      guesses: newGuesses,
+    });
   };
 
   const gradeAnswers = (e) => {
@@ -242,8 +231,6 @@ const Game = () => {
             song={game.options[index]}
             incrementIndex={incrementIndex}
             decrementIndex={decrementIndex}
-            toggleSelectSong={toggleSelectSong}
-            selected={selected}
           />
         );
       case "READY_TO_SUBMIT":

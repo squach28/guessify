@@ -8,10 +8,10 @@ const GuessItem = ({ guess, placeGuess, swap, selected, index }) => {
       className={`border border-black p-1 w-[90%] md:max-w-lg mx-auto text-sm rounded-md hover:cursor-pointer 
     ${
       selected
-        ? guess.value
-          ? "border-black"
-          : "border-blue-800 shadow-md"
-        : ""
+        ? selected.id === guess.id
+          ? "border-blue-800 shadow-md border-2"
+          : ""
+        : "border-black"
     }
   ${swap && swap.id === guess.id ? "border-orange-500" : ""}
   ${
