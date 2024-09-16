@@ -74,7 +74,7 @@ export const getAccessToken = async (req, res) => {
         "https://accounts.spotify.com/api/token",
         {
           code,
-          redirect_uri: `/${process.env.REDIRECT_URI}/auth/accessToken`,
+          redirect_uri: `${process.env.REDIRECT_URI}/auth/accessToken`,
           grant_type: "authorization_code",
         },
         {
