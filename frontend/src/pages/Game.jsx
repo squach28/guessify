@@ -152,8 +152,6 @@ const Game = () => {
       } else {
         // user selected a song and wants to swap
         if (selected) {
-          console.log(selected);
-          console.log(guess);
           swapGuesses(selected, guess);
           setSelected(null);
         } else {
