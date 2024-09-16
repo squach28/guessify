@@ -203,16 +203,16 @@ const Game = () => {
           guess.correct = true;
         }
       });
+
+      const completedGame = {
+        ...game,
+        guesses: correctedGuesses,
+        status: "COMPLETE",
+      };
+
       setGame(() => {
-        updateDoc(session, {
-          guesses: correctedGuesses,
-          status: "COMPLETE",
-        });
-        return {
-          ...game,
-          guesses: correctedGuesses,
-          status: "COMPLETE",
-        };
+        updateDoc(session, completedGame);
+        return completedGame;
       });
     });
   };
