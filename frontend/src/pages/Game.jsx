@@ -21,6 +21,7 @@ const Game = () => {
   const [index, setIndex] = useState(0);
   const [session, setSession] = useState(null);
   const [selected, setSelected] = useState(null);
+  const [answers, setAnswers] = useState(null);
   const { search } = useLocation();
   const query = new URLSearchParams(search);
   const gameId = query.get("id");
@@ -225,6 +226,14 @@ const Game = () => {
       .then((res) => res.data);
   };
 
+  const handleSeeCorrectAnswers = () => {
+    fetchAnswers().then((res) => setAnswers(res));
+  };
+
+  const handleSeeYourAnswers = () => {
+    setAnswers(null);
+  };
+
   const renderBasedOnGameStatus = () => {
     switch (game.status) {
       case "IN_PROGRESS":
@@ -260,9 +269,21 @@ const Game = () => {
               <span>/</span>
               <span>{game.guesses.length}</span>
             </div>
-            <button className="bg-black text-white px-4 py-2 my-2 rounded-md">
-              See Correct Answers
-            </button>
+            {answers ? (
+              <button
+                className="bg-black text-white px-4 py-2 my-2 rounded-md"
+                onClick={handleSeeYourAnswers}
+              >
+                See Your Answers
+              </button>
+            ) : (
+              <button
+                className="bg-black text-white px-4 py-2 my-2 rounded-md"
+                onClick={handleSeeCorrectAnswers}
+              >
+                See Correct Answers
+              </button>
+            )}
           </div>
         );
       default:
@@ -279,7 +300,12 @@ const Game = () => {
           year: "numeric",
         })}
       </p>
-      <GuessesList game={game} placeGuess={placeGuess} selected={selected} />
+      <GuessesList
+        game={game}
+        placeGuess={placeGuess}
+        selected={selected}
+        answers={answers}
+      />
 
       {renderBasedOnGameStatus()}
     </div>
