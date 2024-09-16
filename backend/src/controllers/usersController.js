@@ -55,7 +55,7 @@ export const updateProfilePicture = (req, res) => {
   const split = fileName.split(".");
   const fileType = split[split.length - 1];
   const filePath = file.path;
-  // TODO: getDownloadURL from new avatar image and update db
+
   fs.readFile(filePath, (err, data) => {
     if (err) throw err;
     const destination = `${userId}/avatar.${fileType}`;
