@@ -307,21 +307,25 @@ export const logOut = (req, res) => {
     path: "/",
     httpOnly: true,
     secure: true,
+    sameSite: "none",
   });
   res.clearCookie("spotify_refresh_token", {
     path: "/",
     httpOnly: true,
     secure: true,
+    sameSite: "none",
   });
   res.clearCookie("spotify_token_expiration_date", {
     path: "/",
     httpOnly: true,
     secure: true,
+    sameSite: "none",
   });
   res.clearCookie("spotify_access_token", {
     path: "/",
     httpOnly: true,
     secure: true,
+    sameSite: "none",
   });
   res.status(200).json({ message: "Successfully logged out" });
 };
