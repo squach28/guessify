@@ -201,8 +201,8 @@ export const logIn = (req, res) => {
   }
   db.query(queries.getUserByUsernameAuth, [username], (err, result) => {
     if (err) throw err;
+    console.log("result", result);
     if (result.rowCount === 0) {
-      console.log(result);
       res.status(404).json({
         type: "USER_DOES_NOT_EXIST",
         message: `User with username ${username} doesn't exist`,
