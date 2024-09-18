@@ -16,12 +16,12 @@ export const createGame = (req, res) => {
     accessToken = spotifyAccessToken;
   }
 
-  console.log("accessToken", accessToken);
   db.query(
     queries.getGameForCurrentUserByDate,
     [userId, date],
     (err, result) => {
       if (err) throw err;
+      console.log(result);
       if (result.rowCount > 0) {
         res.status(200).json({ message: "Game already exists" });
         return;
