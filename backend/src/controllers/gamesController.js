@@ -15,6 +15,8 @@ export const createGame = (req, res) => {
     const { spotify_access_token: spotifyAccessToken } = req.cookies;
     accessToken = spotifyAccessToken;
   }
+
+  console.log("accessToken", accessToken);
   db.query(
     queries.getGameForCurrentUserByDate,
     [userId, date],
