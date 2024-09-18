@@ -303,11 +303,18 @@ const getAccessTokenWithRefreshToken = async (refreshToken) => {
 };
 
 export const logOut = (req, res) => {
-  res.clearCookie("access_token", { domain: process.env.DOMAIN });
-  res.clearCookie("spotify_refresh_token", { domain: process.env.DOMAIN });
+  res.clearCookie("access_token", { domain: process.env.DOMAIN, path: "/" });
+  res.clearCookie("spotify_refresh_token", {
+    domain: process.env.DOMAIN,
+    path: "/",
+  });
   res.clearCookie("spotify_token_expiration_date", {
     domain: process.env.DOMAIN,
+    path: "/",
   });
-  res.clearCookie("spotify_access_token", { domain: process.env.DOMAIN });
+  res.clearCookie("spotify_access_token", {
+    domain: process.env.DOMAIN,
+    path: "/",
+  });
   res.status(200).json({ message: "Successfully logged out" });
 };
