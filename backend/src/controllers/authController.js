@@ -164,30 +164,38 @@ export const signUp = (req, res) => {
     });
     return;
   }
-  bcrypt.genSalt(SALT_ROUNDS, (err, salt) => {
+
+  db.query(queries.getUserByUsernameAuth, [username], (err, result) => {
     if (err) throw err;
-    bcrypt.hash(password, salt, (err, hash) => {
-      if (err) throw err;
-      db.query(queries.signup, [email, username, hash], (err, result) => {
+    if (result.rowCount > 0) {
+      res.status(400).json({ message: `${email} is already taken` });
+    } else {
+      bcrypt.genSalt(SALT_ROUNDS, (err, salt) => {
         if (err) throw err;
-        const { id } = result.rows[0];
-        createUser(id, username, email).then(() => {
-          console.log("auth user id", id);
-          const accessToken = jwt.sign(
-            { id, username },
-            process.env.JWT_SECRET,
-            {
-              expiresIn: "1 day",
-            }
-          );
-          res.cookie("access_token", accessToken, {
-            httpOnly: true,
+        bcrypt.hash(password, salt, (err, hash) => {
+          if (err) throw err;
+          db.query(queries.signup, [email, username, hash], (err, result) => {
+            if (err) throw err;
+            const { id } = result.rows[0];
+            createUser(id, username, email).then(() => {
+              console.log("auth user id", id);
+              const accessToken = jwt.sign(
+                { id, username },
+                process.env.JWT_SECRET,
+                {
+                  expiresIn: "1 day",
+                }
+              );
+              res.cookie("access_token", accessToken, {
+                httpOnly: true,
+              });
+              res.status(201).json({ id });
+              return;
+            });
           });
-          res.status(201).json({ id });
-          return;
         });
       });
-    });
+    }
   });
 };
 
@@ -199,6 +207,8 @@ export const logIn = (req, res) => {
     });
     return;
   }
+
+  console.log("login called");
   db.query(queries.getUserByUsernameAuth, [username], (err, result) => {
     if (err) throw err;
     console.log("result", result);
