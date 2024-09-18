@@ -11,7 +11,9 @@ export const jwtAuthMiddleware = (req, res, next) => {
   }
 
   try {
+    console.log("access token", accessToken);
     const decoded = jwt.verify(accessToken, process.env.JWT_SECRET);
+    console.log("decoded id", decoded.id);
     req.userId = decoded.id;
     next();
   } catch (e) {

@@ -171,8 +171,8 @@ export const signUp = (req, res) => {
       db.query(queries.signup, [email, username, hash], (err, result) => {
         if (err) throw err;
         const { id } = result.rows[0];
-        console.log(id);
         createUser(id, username, email).then(() => {
+          console.log("auth user id", id);
           const accessToken = jwt.sign(
             { id, username },
             process.env.JWT_SECRET,
