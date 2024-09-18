@@ -200,7 +200,6 @@ export const signUp = (req, res) => {
 };
 
 export const logIn = (req, res) => {
-  console.log(req);
   const { username, password } = req.body;
   if (username === undefined || password === undefined) {
     res.status(400).json({
@@ -209,10 +208,8 @@ export const logIn = (req, res) => {
     return;
   }
 
-  console.log("login called");
   db.query(queries.getUserByUsernameAuth, [username], (err, result) => {
     if (err) throw err;
-    console.log("result", result);
     if (result.rowCount === 0) {
       res.status(404).json({
         type: "USER_DOES_NOT_EXIST",
