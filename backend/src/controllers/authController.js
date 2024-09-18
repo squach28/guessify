@@ -245,9 +245,21 @@ export const logIn = (req, res) => {
             const hourInSeconds = 60 * 60 * 1000;
             date.setTime(date.getTime() + hourInSeconds);
 
-            res.cookie("spotify_access_token", spotifyAccessToken);
-            res.cookie("spotify_token_expiration_date", date);
-            res.cookie("spotify_refresh_token", spotifyRefreshToken);
+            res.cookie("spotify_access_token", spotifyAccessToken, {
+              httpOnly: true,
+              sameSite: "none",
+              secure: true,
+            });
+            res.cookie("spotify_token_expiration_date", date, {
+              httpOnly: true,
+              sameSite: "none",
+              secure: true,
+            });
+            res.cookie("spotify_refresh_token", spotifyRefreshToken, {
+              httpOnly: true,
+              sameSite: "none",
+              secure: true,
+            });
             res.status(200).json({ message: "Success" });
             return;
           })
