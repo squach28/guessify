@@ -16,12 +16,15 @@ export const createGame = (req, res) => {
     accessToken = spotifyAccessToken;
   }
 
+  const previousMonth = new Date(date);
+  previousMonth.setDate(1);
+  previousMonth.setMonth(previousMonth.getMonth() - 1);
+
   db.query(
     queries.getGameForCurrentUserByDate,
-    [userId, date],
+    [userId, previousMonth],
     (err, result) => {
       if (err) throw err;
-      console.log(result);
       if (result.rowCount > 0) {
         res.status(200).json({ message: "Game already exists" });
         return;
@@ -41,15 +44,14 @@ export const createGame = (req, res) => {
                 rank: index + 1,
               };
             });
-            const date = new Date();
-            date.setMonth(date.getMonth() - 1);
-            date.setDate(1);
-            commitTransaction(db, queries.createGame, [userId, date]).then(
-              (dbResult) => {
-                const { id } = dbResult.rows[0];
-                uploadAnswers(db, id, answers);
-              }
-            );
+
+            commitTransaction(db, queries.createGame, [
+              userId,
+              previousMonth,
+            ]).then((dbResult) => {
+              const { id } = dbResult.rows[0];
+              uploadAnswers(db, id, answers);
+            });
             res.status(201).json(result.data);
             return;
           });
