@@ -200,6 +200,7 @@ export const signUp = (req, res) => {
 };
 
 export const logIn = (req, res) => {
+  console.log(req);
   const { username, password } = req.body;
   if (username === undefined || password === undefined) {
     res.status(400).json({
