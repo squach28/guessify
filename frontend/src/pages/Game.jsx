@@ -26,7 +26,7 @@ const Game = () => {
   const query = new URLSearchParams(search);
   const gameId = query.get("id");
   const date = new Date(query.get("date"));
-  date.setDate(date.getDate() + 1);
+  date.setMonth(date.getMonth() + 1);
 
   useEffect(() => {
     getSessionByGameId(gameId)
