@@ -188,6 +188,8 @@ export const signUp = (req, res) => {
               );
               res.cookie("access_token", accessToken, {
                 httpOnly: true,
+                sameSite: "none",
+                secure: true,
               });
               res.status(201).json({ id });
               return;
